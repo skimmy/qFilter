@@ -7,4 +7,4 @@ if __name__ == "__main__":
         fastafile = sys.argv[1]
         filehandle = open(fastafile, "rU")
         records = SeqIO.parse(filehandle, "fastq")
-    print (records.next())
+    print (records.next().letter_annotations["phred_quality"])
