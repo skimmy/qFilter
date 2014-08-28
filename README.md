@@ -37,3 +37,4 @@ them.
 Python dependance
 * Python 2.7 (not sure about backward compatibility of Pythhon 3)
 * BioPython (1.59 is used)
+
