@@ -32,3 +32,6 @@ if __name__ == "__main__":
             print(q)
         else:
             outFileHandle.write(str(q) + "\n")
+    fileHandle.close()
+    if outFile != None:
+        outFileHandle.close()
