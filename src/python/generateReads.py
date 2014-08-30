@@ -1,11 +1,15 @@
 #! /usr/bin/python
 
 import argparse
+import math
+import random
 
 import numpy as np
 from scipy import stats
 
 from Bio import SeqIO
+
+outFileHandler = None
 
 def parseArguments():
     parser = argparse.ArgumentParser()
@@ -13,6 +17,7 @@ def parseArguments():
     parser.add_argument("distribution", help="distribution file for quality values")
     parser.add_argument("-M", "--number", help="number of generated reads", type=int, default=1000)
     parser.add_argument("-m", "--length", help="length of a single read", type=int, default=100)
+    parser.add_argument("-o", "--output", help="fastq for the output")
     return parser.parse_args()
 
 def getRandomGenerator(freqs):
@@ -21,6 +26,7 @@ def getRandomGenerator(freqs):
     probs = [float(freqs[i])/float(s) for i in range(l)]
     quals = np.arange(l)
     dist = stats.rv_discrete(name='custm', values=(quals, probs))
+    return dist
     # print(dist.rvs(size=10))
     # print probs
 
@@ -36,17 +42,41 @@ def loadReferenceSequence(referenceFileName):
     records = SeqIO.parse(referenceFileName, "fasta")
     return next(records).seq
 
-def generateReads(refSeq, randGenQual, m, M):
+def generateError(qualityValue, actualNucleotide):
+    e = -1.0 * ( float(qualityValue) / 10.0 )
+    p = math.pow(10.0, e)
+    r = random.random()
+    if r < p:
+        nucs = ["A","C","G","T"]
+        nucs.remove(actualNucleotide.upper())
+        return nucs[random.randint(0,len(nucs)-1)]
+    return actualNucleotide
+    print(p)
+
+def generateReads(refSeq, randGenQual, m, M, name=""):
     reads = []
     N = len(refSeq)
+    qualOffset = SeqIO.QualityIO.SANGER_SCORE_OFFSET 
     barN = N - m + 1
     for i in range(M):
         j = np.random.randint(barN)
-        
-        print(j)
         readSeq = str(refSeq)[j:j+m]
         readQual = ""
-        reads.append((readSeq, readQual))
+        readSeqNoErr = str(readSeq)
+        temp = []
+        for l in range(len(readSeq)):
+            # here quality is generated and errors are introduced
+            q = int(randGenQual.rvs())
+            readQual = readQual + SeqIO.QualityIO._phred_to_sanger_quality_str[q]
+            #chr(q + qualOffset) 
+            #+ str(q) + " "
+            temp.append(generateError(q,readSeq[l]))
+        readSeq = "".join(temp)
+        readHead = "@%s:%d pos=%d NoErr=%s" % (name, i, j, str(readSeqNoErr))
+        if outFileHandler != None:
+            outFileHandler.write(readHead + "\n" + readSeq + "\n+\n" + readQual + "\n")
+        else:
+            reads.append((readSeq, readQual, readHead))
     return reads
     
 
@@ -56,11 +86,19 @@ if __name__ == "__main__":
     m = args.length
     referenceFileName = args.reference
     distFileName = args.distribution
+    outFileName = args.output
+    if outFileName != None:
+        outFileHandler = open(outFileName, "w")
     print "\nReference: %s\nDistribution: %s\n(M,m) = (%d, %d)\n" % (referenceFileName, distFileName,M,m)
     refSeq = loadReferenceSequence(referenceFileName)
-    qDist = loadDistribution(distFileName)
-    getRandomGenerator(qDist)
-    reads = generateReads(refSeq, qDist, m, M)
+    qDist = getRandomGenerator(loadDistribution(distFileName))
+    reads = generateReads(refSeq, qDist, m, M, name="ecoli_sample")
     for r in reads:
+        print(str(r[2]))
         print(str(r[0]))
+        print(str(r[1]))
+        print("")
+    if outFileHandler != None:
+        outFileHandler.close()
+        
     
