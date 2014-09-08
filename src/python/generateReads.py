@@ -6,8 +6,9 @@ import random
 
 import numpy as np
 from scipy import stats
-
 from Bio import SeqIO
+
+import qualityUtil as qutil
 
 outFileHandler = None
 
@@ -27,8 +28,6 @@ def getRandomGenerator(freqs):
     quals = np.arange(l)
     dist = stats.rv_discrete(name='custm', values=(quals, probs))
     return dist
-    # print(dist.rvs(size=10))
-    # print probs
 
 def loadDistribution(distFileName):
     distFile = open(distFileName)
@@ -64,15 +63,15 @@ def generateReads(refSeq, randGenQual, m, M, name=""):
         readQual = ""
         readSeqNoErr = str(readSeq)
         temp = []
+        readErrorProb = 1.0
         for l in range(len(readSeq)):
             # here quality is generated and errors are introduced
             q = int(randGenQual.rvs())
+            readErrorProb = readErrorProb * (1.0 - qutil.valueToProb(q))
             readQual = readQual + SeqIO.QualityIO._phred_to_sanger_quality_str[q]
-            #chr(q + qualOffset) 
-            #+ str(q) + " "
             temp.append(generateError(q,readSeq[l]))
-        readSeq = "".join(temp)
-        readHead = "@%s:%d pos=%d NoErr=%s" % (name, i, j, str(readSeqNoErr))
+        readSeq = "".join(temp)       
+        readHead = "@%s:%d pos=%d NoErr=%s Pe=%f" % (name, i, j, str(readSeqNoErr), readErrorProb)
         if outFileHandler != None:
             outFileHandler.write(readHead + "\n" + readSeq + "\n+\n" + readQual + "\n")
         else:
@@ -100,5 +99,4 @@ if __name__ == "__main__":
         print("")
     if outFileHandler != None:
         outFileHandler.close()
-        
     
