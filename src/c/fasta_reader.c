@@ -8,6 +8,13 @@
 #define ERR_TRAILING_AT 1    /* Can't find '@' at the begin */
 #define ERR_NO_ID_DIVIDER 2  /* Can't find the ':' divider */
 
+/* 
+ * This is the POSIX regex for the (custom) reads header.
+ * The header is in the form:
+ *     @<name>:<id> pos=<seq_pos> NoErr=<orig_seq> Pe=<error_prob>
+ **/
+char* header_re = "@";
+
 void header_parse_error_message(int error) {
   switch(error) {
   case 0:
