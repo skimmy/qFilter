@@ -131,6 +131,7 @@ void string_to_header_regex(char* str, read_header* head) {
     printf("Pos:  %d\n", (int)head->sequencing_position);
   }
 
+
   
     
   // this part is performed only if debug level is at least 2
