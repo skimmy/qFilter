@@ -9,6 +9,8 @@
 #define ERR_TRAILING_AT 1    /* Can't find '@' at the begin */
 #define ERR_NO_ID_DIVIDER 2  /* Can't find the ':' divider */
 
+#define REGEX_NO_MATCH 100   /* Regex test not passed */
+
 int __debug = 2; 
 int __out_enabled = 1;
 
@@ -89,12 +91,15 @@ int string_to_read_header(char* str, read_header * head) {
   tmp = NULL;     
 }
 
-void string_to_header_regex(char* str, read_header* head) {
+int string_to_header_regex(char* str, read_header* head) {
   int nmatches = 6;
   regmatch_t * matches = malloc(sizeof(regmatch_t) * nmatches);
   regex_t head_re;
   int re_comp_ret = regcomp(&head_re, header_re_string, REG_EXTENDED);
   int re_exec_ret = regexec(&head_re, str, nmatches, matches, 0);
+  if (re_exec_ret != 0) {
+    return REGEX_NO_MATCH;
+  }
   int begin = -1, end = -1, match_size = -1;
   char* tmp = malloc(DEFAULT_STRING_SIZE);
   // matches[0] contains the part of the string that matched
@@ -131,8 +136,28 @@ void string_to_header_regex(char* str, read_header* head) {
     printf("Pos:  %d\n", (int)head->sequencing_position);
   }
 
+  // match[4] contains the original veriosn of the read (i.e. without errors)
+  begin = (size_t) matches[4].rm_so;
+  end = (size_t) matches[4].rm_eo;
+  match_size = end - begin;
+  head->original = malloc(match_size);
+  strncpy(head->original, (str + begin), match_size);
+  head->original[match_size] = '\0';  
+  if ((__debug >= 2) && __out_enabled) {
+    printf("Orig: %s\n", head->original);
+  }
 
-  
+  // match[5] contains the error probability of the read
+  begin = (size_t) matches[5].rm_so;
+  end = (size_t) matches[5].rm_eo;
+  match_size = end - begin;
+  strncpy(tmp, (str + begin), match_size);
+  tmp[match_size] = '\0';
+  head->error_probability = atof(tmp);
+  if ((__debug >= 2) && __out_enabled) {
+    printf("Pe:   %f\n", head->error_probability);
+  }
+ 
     
   // this part is performed only if debug level is at least 2
   // (high verbosity) and also the output is enabled. 
@@ -153,7 +178,8 @@ void string_to_header_regex(char* str, read_header* head) {
   free(tmp);
   free(matches);
   matches = NULL;
-    
+
+  return NO_ERR;
 }
 
 char* example = "@ecoli_sample:0 pos=510030 NoErr=GACAATTGCCTGCCAGCGGA Pe=0.115553";
