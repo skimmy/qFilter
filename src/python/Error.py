@@ -46,27 +46,37 @@ class ErrorGenerator(object):
     errTypeGen = None
     substGen = None    
 
-    def __init__(self, qDist=None):
+    def __init__(self, qDist=None, eDist=None):
         self.qualDist = self.defaultQualDist
         self.errTypeDist = self.defaultErrTypeDist
         self.subMatrixDist = self.defaultSubMatrixDist
         self.initQualityDistribution(qDist)
+        self.initErrorTypeDistribution(eDist)
+
+    def initErrorTypeDistribution(self, errDist=None):
+        if errDist != None:
+            self.errTypeDist = errDist
+        x = np.arange(len(self.errorTypeListString))
+        self.errTypeGen = stats.rv_discrete(name='error_type_distribution', values=(x, self.errTypeDist))
         
     def initQualityDistribution(self, qDist=None):
-        if (qDist != None):
+        if qDist != None:
             self.qualDist = qDist
         x = np.arange(len(self.qualDist))
         self.qualGen = stats.rv_discrete(name='quality_generator', values=(x,self.qualDist))
+
+    def generateErrorType(self):
+        return self.errorTypeListString[self.errTypeGen.rvs()]
 
     def generateQualityValue(self):
         return int(self.qualGen.rvs())
 
 
 if __name__ == "__main__":
-    eg = ErrorGenerator(qDist=[0.45, 0.45, 0.05, 0.05]);
+    eg = ErrorGenerator(eDist=[0.85, 0.01, 0.11, 0.03]);
     qs = []
-    for i in range(40):
-        qs.append(eg.generateQualityValue())
+    for i in range(20):
+        qs.append(eg.generateErrorType())
     print(qs)
 
     
