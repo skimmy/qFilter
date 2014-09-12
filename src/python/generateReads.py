@@ -52,7 +52,7 @@ def generateError(qualityValue, actualNucleotide):
     return actualNucleotide
     print(p)
 
-def generateReads(refSeq, randGenQual, m, M, name=""):
+def generateReads(refSeq, randGenQual, m, M, name="", errDist=None):
     reads = []
     N = len(refSeq)
     qualOffset = SeqIO.QualityIO.SANGER_SCORE_OFFSET 
@@ -77,8 +77,7 @@ def generateReads(refSeq, randGenQual, m, M, name=""):
         else:
             reads.append((readSeq, readQual, readHead))
     return reads
-    
-
+ 
 if __name__ == "__main__":
     args = parseArguments()
     M = args.number
