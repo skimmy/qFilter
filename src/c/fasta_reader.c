@@ -3,24 +3,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#define DEFAULT_STRING_SIZE  1024
+#include "fasta_reader.h"
 
-#define NO_ERR 0             /* Code for no error occured  */
-#define ERR_TRAILING_AT 1    /* Can't find '@' at the begin */
-#define ERR_NO_ID_DIVIDER 2  /* Can't find the ':' divider */
-
-#define REGEX_NO_MATCH 100   /* Regex test not passed */
-
-int __debug = 2; 
-int __out_enabled = 1;
-
-/* 
- * This is the POSIX regex for the (custom) reads header.
- * The header is in the form:
- *     @<name>:<id> pos=<seq_pos> NoErr=<orig_seq> Pe=<error_prob>
- **/
-char* header_re_string = 
-  "@([_A-Za-z0-1]+):([_A-Za-z0-9]+) pos=([0-9]+) NoErr=([ACGT]+) Pe=([0-1].[0-9]+)$";
 //+:[0-9]+[:blank]pos=[0-9]+$";
 
 void header_parse_error_message(int error) {
@@ -39,19 +23,6 @@ void header_parse_error_message(int error) {
   }
 }
 
-typedef struct {
-  char* id;
-  size_t sequencing_position;
-  double  error_probability;
-
-  /*
-   * These are optional and if not used should be set to NULL to indicate that
-   * corresponsing memory zone needs not to be freed.
-   */
-  char* name;
-  char* original;
-  
-} read_header;
 
 /*
  *  Transforms a raw string containing a valid header into a proper
