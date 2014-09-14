@@ -1,11 +1,5 @@
-#include <regex.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-
 #include "fasta_reader.h"
 
-//+:[0-9]+[:blank]pos=[0-9]+$";
 
 void header_parse_error_message(int error) {
   switch(error) {
