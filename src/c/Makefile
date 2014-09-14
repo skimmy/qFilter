@@ -1,6 +1,8 @@
-SRC=fasta_reader.c read_sorter.c
-HDR=fasta_read.h read_sorter.h
+SRC=fasta_reader.c read_sorter.c util/debug.c
+HDR=fasta_read.h read_sorter.h util/debug.h
 OUT=reader.out
+
+GXX=g++
 
 DEPENDENCIES=$(SRC) $(HDR)
 
@@ -12,4 +14,7 @@ DEBUG=-g
 ALL_OPTIONS=$(WARNINGS) $(OPTIMIZATIONS) $(DEBUG)
 
 $(OUT): $(SRC) 
-	gcc $(ALL_OPTIONS) $(SRC) -o $(OUT)
+	$(GXX) $(ALL_OPTIONS) $(SRC) -o $(OUT)
+
+clean: $(OUT)
+	rm -rf $(OUT)

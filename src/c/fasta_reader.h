@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "util/debug.h"
+
 #define DEFAULT_STRING_SIZE  1024
 
 #define NO_ERR 0             /* Code for no error occured  */
@@ -13,18 +15,6 @@
 #define ERR_NO_ID_DIVIDER 2  /* Can't find the ':' divider */
 
 #define REGEX_NO_MATCH 100   /* Regex test not passed */
-
-
-int __debug = 2;
-int __out_enabled = 1; 
-
-/* 
- * This is the POSIX regex for the (custom) reads header.
- * The header is in the form:
- *     @<name>:<id> pos=<seq_pos> NoErr=<orig_seq> Pe=<error_prob>
- **/
-char* header_re_string = 
-  "@([_A-Za-z0-1]+):([_A-Za-z0-9]+) pos=([0-9]+) NoErr=([ACGT]+) Pe=([0-1].[0-9]+)$";
 
 
 /*

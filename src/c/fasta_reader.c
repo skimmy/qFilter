@@ -1,5 +1,12 @@
 #include "fasta_reader.h"
 
+/* 
+ * This is the POSIX regex for the (custom) reads header.
+ * The header is in the form:
+ *     @<name>:<id> pos=<seq_pos> NoErr=<orig_seq> Pe=<error_prob>
+ **/
+char* header_re_string = 
+  "@([_A-Za-z0-1]+):([_A-Za-z0-9]+) pos=([0-9]+) NoErr=([ACGT]+) Pe=([0-1].[0-9]+)$";
 
 void header_parse_error_message(int error) {
   switch(error) {
@@ -27,7 +34,7 @@ void header_parse_error_message(int error) {
  */
 int string_to_read_header(char* str, read_header * head) {
   // support string and its index
-  char* tmp = malloc(DEFAULT_STRING_SIZE);
+  char* tmp = (char*) malloc(DEFAULT_STRING_SIZE);
   size_t j = 0;  
 
   // first character must be '@'
@@ -58,7 +65,7 @@ int string_to_read_header(char* str, read_header * head) {
 
 int string_to_header_regex(char* str, read_header* head) {
   int nmatches = 6;
-  regmatch_t * matches = malloc(sizeof(regmatch_t) * nmatches);
+  regmatch_t * matches = (regmatch_t*) malloc(sizeof(regmatch_t) * nmatches);
   regex_t head_re;
   int re_comp_ret = regcomp(&head_re, header_re_string, REG_EXTENDED);
   int re_exec_ret = regexec(&head_re, str, nmatches, matches, 0);
@@ -66,27 +73,27 @@ int string_to_header_regex(char* str, read_header* head) {
     return REGEX_NO_MATCH;
   }
   int begin = -1, end = -1, match_size = -1;
-  char* tmp = malloc(DEFAULT_STRING_SIZE);
+  char* tmp = (char*) malloc(DEFAULT_STRING_SIZE);
   // matches[0] contains the part of the string that matched
   // ...do something with the whole string if  you need
   // matches[1] contains the name of the read (i.e. dataset)
   begin = (size_t) matches[1].rm_so;
   end = (size_t) matches[1].rm_eo;
   match_size = end - begin;
-  head->name = malloc(match_size + 1);
+  head->name = (char*) malloc(match_size + 1);
   strncpy(head->name, (str + begin), match_size);
   head->name[match_size] = '\0';
-  if ((__debug >= 2) && __out_enabled) {
+  if ((_debug >= 2) && __out_enabled) {
     printf("Name: %s\n", head->name);
   }
   // match[2] contains the id of the read within the dataset
   begin = (size_t) matches[2].rm_so;
   end = (size_t) matches[2].rm_eo;
   match_size = end - begin;
-  head->id = malloc(match_size + 1);
+  head->id = (char*) malloc(match_size + 1);
   strncpy(head->id, (str + begin), match_size);
   head->id[match_size] = '\0';
-  if ((__debug >= 2) && __out_enabled) {
+  if ((_debug >= 2) && __out_enabled) {
     printf("ID:   %s\n", head->id);
   }
 
@@ -97,7 +104,7 @@ int string_to_header_regex(char* str, read_header* head) {
   strncpy(tmp, (str + begin), match_size);
   tmp[match_size] = '\0';
   head->sequencing_position = atoi(tmp);
-  if ((__debug >= 2) && __out_enabled) {
+  if ((_debug >= 2) && __out_enabled) {
     printf("Pos:  %d\n", (int)head->sequencing_position);
   }
 
@@ -105,10 +112,10 @@ int string_to_header_regex(char* str, read_header* head) {
   begin = (size_t) matches[4].rm_so;
   end = (size_t) matches[4].rm_eo;
   match_size = end - begin;
-  head->original = malloc(match_size);
+  head->original = (char*) malloc(match_size);
   strncpy(head->original, (str + begin), match_size);
   head->original[match_size] = '\0';  
-  if ((__debug >= 2) && __out_enabled) {
+  if ((_debug >= 2) && __out_enabled) {
     printf("Orig: %s\n", head->original);
   }
 
@@ -119,14 +126,14 @@ int string_to_header_regex(char* str, read_header* head) {
   strncpy(tmp, (str + begin), match_size);
   tmp[match_size] = '\0';
   head->error_probability = atof(tmp);
-  if ((__debug >= 2) && __out_enabled) {
+  if ((_debug >= 2) && __out_enabled) {
     printf("Pe:   %f\n", head->error_probability);
   }
  
     
   // this part is performed only if debug level is at least 2
   // (high verbosity) and also the output is enabled. 
-  if ((__debug >= 2) && __out_enabled) {
+  if ((_debug >= 2) && __out_enabled) {
     printf("------------------\n");
     printf("regcom return value: %d\n", re_comp_ret);
     printf("regexec return value: %d\n", re_exec_ret);
@@ -157,6 +164,9 @@ int main(int argc, char** argv)
   // read_header header
   // header_parse_error_message(string_to_read_header(example, &header));  
   // printf("\n");
+
+  MESSAGE_DEBUG("Hello!\n");
+  Debug::message("AA", "hi!!");
  
   // regex parsing
   read_header header_regex;  
