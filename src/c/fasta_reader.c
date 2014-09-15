@@ -5,7 +5,8 @@
  * The header is in the form:
  *     @<name>:<id> pos=<seq_pos> NoErr=<orig_seq> Pe=<error_prob>
  **/
-char* header_re_string = 
+//char* header_re_string = 
+string header_re_string = 
   "@([_A-Za-z0-1]+):([_A-Za-z0-9]+) pos=([0-9]+) NoErr=([ACGT]+) Pe=([0-1].[0-9]+)$";
 
 void header_parse_error_message(int error) {
@@ -32,7 +33,7 @@ void header_parse_error_message(int error) {
  *  str    the string containing the raw read header
  *  head   an valid pointer to a read_header structure
  */
-int string_to_read_header(char* str, read_header * head) {
+int string_to_read_header(const char* str, read_header * head) {
   // support string and its index
   char* tmp = (char*) malloc(DEFAULT_STRING_SIZE);
   size_t j = 0;  
@@ -63,11 +64,11 @@ int string_to_read_header(char* str, read_header * head) {
   tmp = NULL;     
 }
 
-int string_to_header_regex(char* str, read_header* head) {
+int string_to_header_regex(const char* str, read_header* head) {
   int nmatches = 6;
   regmatch_t * matches = (regmatch_t*) malloc(sizeof(regmatch_t) * nmatches);
   regex_t head_re;
-  int re_comp_ret = regcomp(&head_re, header_re_string, REG_EXTENDED);
+  int re_comp_ret = regcomp(&head_re, header_re_string.c_str(), REG_EXTENDED);
   int re_exec_ret = regexec(&head_re, str, nmatches, matches, 0);
   if (re_exec_ret != 0) {
     return REGEX_NO_MATCH;
@@ -154,9 +155,9 @@ int string_to_header_regex(char* str, read_header* head) {
   return NO_ERR;
 }
 
-char* example = "@ecoli_sample:0 pos=510030 NoErr=GACAATTGCCTGCCAGCGGA Pe=0.115553";
-char* error_example = "@eco";
-char* fake_example="@b_a:12 pos=11 NoErr=GAA Pe=0.11";
+string example = "@ecoli_sample:0 pos=510030 NoErr=GACAATTGCCTGCCAGCGGA Pe=0.115553";
+string error_example = "@eco";
+string fake_example="@b_a:12 pos=11 NoErr=GAA Pe=0.11";
 
 int main(int argc, char** argv)
 {
@@ -170,6 +171,6 @@ int main(int argc, char** argv)
  
   // regex parsing
   read_header header_regex;  
-  string_to_header_regex(example, &header_regex);
+  string_to_header_regex(example.c_str(), &header_regex);
   return 0;
 }

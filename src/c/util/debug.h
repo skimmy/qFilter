@@ -18,6 +18,7 @@ class Debug
  public:
   static void message(const string &tag, const string &msg) {
     cout << "[" << tag << "] - \"" << msg << "\"" << endl;
+
   }
 };
 

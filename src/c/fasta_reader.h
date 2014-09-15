@@ -47,7 +47,7 @@ typedef struct {
  *  str    the string containing the raw read header
  *  head   an valid pointer to a read_header structure
  */
-int string_to_read_header(char* str, read_header * head); // NOT DONE YET!!!!
-int string_to_header_regex(char* str, read_header* head);
+int string_to_read_header(const char* str, read_header * head); // NOT DONE YET!!!!
+int string_to_header_regex(const char* str, read_header* head);
 
 #endif
