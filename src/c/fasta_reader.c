@@ -174,3 +174,28 @@ int main(int argc, char** argv)
   string_to_header_regex(example.c_str(), &header_regex);
   return 0;
 }
+
+read_header* default_header_init() {
+  read_header* tmp = (read_header*) malloc(sizeof(read_header));
+  tmp->id = NULL;
+  tmp->name = NULL;
+  tmp->original = NULL;
+
+  tmp->sequencing_position = -1;
+  tmp->error_probability = -1.0;
+
+  return tmp;
+}
+
+void header_free(read_header* head) {
+  if (head->id != NULL) {
+    free(head->id);  
+  }
+  if (head->name != NULL) {
+    free(head->name);
+  }
+  if (head->original != NULL) {
+    free(head->original);
+
+  }
+}

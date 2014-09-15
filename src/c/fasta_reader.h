@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <float.h>
 
 #include "util/debug.h"
 
@@ -39,7 +40,7 @@ typedef struct {
 
 
 /*
- *  Followinf functions are used to transform a raw string containing a valid
+ *  Following functions are used to transform a raw string containing a valid
  *  header into a proper read_header structure. The difference between the two
  *  functions is on the way used to parse, in one case simple string scnning is
  *  used, in the other posix regular expression library is used.
@@ -49,5 +50,38 @@ typedef struct {
  */
 int string_to_read_header(const char* str, read_header * head); // NOT DONE YET!!!!
 int string_to_header_regex(const char* str, read_header* head);
+
+/*
+ * These are general maintance functions for the read_header structure like:
+ * default initialization, deallocation, ...
+ */
+
+read_header* default_header_init();
+void header_free(read_header* head);
+
+/*
+ * This is the comparator object used to compare two header based on their erorr
+ * probability field. This struct is created in order to use the stxxl sorter
+ * container and therefore follows the structure required from stxxl. It can, of
+ * course, be extended and reused in any other application.
+ */
+struct head_reader_prob_comparator  {
+  
+  read_header head_min_prob;// = { error_probability = DBL_MIN; } 
+  read_header head_max_prob;
+
+  bool operator()(const read_header& a, const read_header& b) const {
+    return (a.error_probability < b.error_probability);
+  }
+
+  read_header min_value() const {
+    return head_min_prob;
+  }
+
+  read_header max_value() const {
+    return head_max_prob;
+  }
+  
+};
 
 #endif
