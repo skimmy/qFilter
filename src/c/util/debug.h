@@ -17,7 +17,9 @@ class Debug
 {
  public:
   static void message(const string &tag, const string &msg) {
+    #ifdef VERBOSE
     cout << "[" << tag << "] - \"" << msg << "\"" << endl;
+    #endif
 
   }
 };
