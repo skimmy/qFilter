@@ -7,6 +7,7 @@
 #include <string.h>
 #include <float.h>
 
+#include "fasta_reader.h"
 #include "util/debug.h"
 
 #define DEFAULT_STRING_SIZE  1024

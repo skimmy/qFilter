@@ -1,4 +1,5 @@
 #include "fasta_reader.h"
+#include "read_sorter.h"
 
 /* 
  * This is the POSIX regex for the (custom) reads header.
@@ -166,7 +167,7 @@ int main(int argc, char** argv)
   // header_parse_error_message(string_to_read_header(example, &header));  
   // printf("\n");
 
-  MESSAGE_DEBUG("Hello!\n");
+  printf("%d", PADDING_LENGTH);
   Debug::message("AA", "hi!!");
  
   // regex parsing
