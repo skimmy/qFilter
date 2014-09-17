@@ -39,5 +39,5 @@ Python dependancies
 * BioPython (1.59 is used)
 
 C/C++ dependancies
-* g++ 4.2+ has been used to compile the files in this repository
+* g++ 4.7+ has been used to compile the files in this repository (c++11 code is used)
 * some files require stxxl library to run, be sure to have it installe (1.4-dev has been used)

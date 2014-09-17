@@ -76,6 +76,9 @@ class ReadRecordWrapper {
   ReadRecordWrapper();
   ReadRecordWrapper(char* read_seq, char* read_quals, read_header* header);
   ~ReadRecordWrapper();
+
+ private:
+  void HeaderToRecord(read_header* header, read_record_t* record);
   
 };
 
