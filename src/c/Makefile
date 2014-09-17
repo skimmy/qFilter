@@ -1,4 +1,4 @@
-SRC=fasta_reader.c read_sorter.cpp util/debug.c
+SRC=fasta_reader.cpp read_sorter.cpp util/debug.c
 HDR=fasta_read.h read_sorter.h util/debug.h
 OUT=reader.out
 

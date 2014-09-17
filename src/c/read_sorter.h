@@ -9,7 +9,7 @@
 #define WORD_SIZE         8
 #define MAX_NAME_LENGTH   512
 #define MAX_READ_LENGTH   1024
-#define PADDING_LENGTH    (2048 - 3 * WORD_SIZE - MAX_NAME_LENGTH - MAX_READ_LENGTH)
+#define PADDING_LENGTH    (2048 - 4 * WORD_SIZE - MAX_NAME_LENGTH - MAX_READ_LENGTH)
 
 /*
  * This structure contains the full read record which is composed by:
@@ -27,6 +27,8 @@ typedef struct {
   uint64_t id;
   int64_t sequencing_position;
   double error_probability;
+
+  uint64_t actual_read_length;
 
   char sequence[MAX_READ_LENGTH];
   char qualities[MAX_READ_LENGTH];

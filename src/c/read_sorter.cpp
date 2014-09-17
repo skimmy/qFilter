@@ -15,6 +15,8 @@ ReadRecordWrapper::ReadRecordWrapper() {
   memset(this->read->qualities, 0, MAX_READ_LENGTH);
   memset(this->read->name, 0, MAX_NAME_LENGTH);
   memset(this->read->original, 0, MAX_READ_LENGTH);
+  // and size is set to 0
+  this->read->actual_read_length = 0;
 }
 
 ReadRecordWrapper::~ReadRecordWrapper() {
@@ -23,8 +25,11 @@ ReadRecordWrapper::~ReadRecordWrapper() {
 }
 
 ReadRecordWrapper::ReadRecordWrapper(char* read_seq, char* read_quals, read_header* header)  : ReadRecordWrapper() {
+  this->read->actual_read_length = min((int)strlen(read_seq), MAX_READ_LENGTH);
+  strncpy(this->read->sequence, read_seq, this->read->actual_read_length);
+  strncpy(this->read->qualities, read_quals, this->read->actual_read_length);
   HeaderToRecord(header, this->read);
-
+  
 }
 
 // WARNING: this method does not check the validity of the fields in the
