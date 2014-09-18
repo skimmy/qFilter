@@ -69,7 +69,6 @@ read_record_t* ReadRecordWrapper::getRecord() {
 }
 
 
-
 std::ostream& operator<< (std::ostream& os, const ReadRecordWrapper& record) {
   return os;
 }
