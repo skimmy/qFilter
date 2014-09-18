@@ -11,7 +11,7 @@
 #define MAX_READ_LENGTH   1024
 #define PADDING_LENGTH    (2048 - 4 * WORD_SIZE - MAX_NAME_LENGTH - MAX_READ_LENGTH)
 
-/*
+/**
  * This structure contains the full read record which is composed by:
  *    - One sequence of characters for the bases
  *    - One sequence of characters for the quality
