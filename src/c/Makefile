@@ -1,14 +1,14 @@
 SRC_BASIC=main.cpp fasta_reader.cpp read_sorter.cpp 
 SRC_UTIL=util/debug.cpp
 SRC_FAST=util/fast/Format.cpp
-SRC_SEQUENCE=util/sequence/Read.cpp util/sequence/FastqRead.cpp
+SRC_SEQUENCE=util/sequence/Read.cpp util/sequence/FastqRead.cpp util/sequence/KMer.cpp util/sequence/Reference.cpp util/sequence/ColorAlphabet.cpp util/sequence/DNAAlphabet.cpp
 
 ALL_SRC=$(SRC_BASIC) $(SRC_UTIL) $(SRC_FAST) $(SRC_SEQUENCE)
 
 HDR_BASIC=fasta_read.hpp read_sorter.hpp
 HDR_UTIL=util/debug.hpp util/stxxl_helper.hpp
 HDR_FAST=util/fast/Format.hpp
-HDR_SEQUENCE=util/seq.hpp util/sequence/Sequence.hpp util/sequence/Read.cpp util/sequence/Read.hpp util/sequence/FastqRead.hpp
+HDR_SEQUENCE=util/seq.hpp util/sequence/Sequence.hpp util/sequence/Read.cpp util/sequence/Read.hpp util/sequence/FastqRead.hpp util/sequence/KMer.hpp util/sequence/Reference.cpp util/sequence/ColorAlphabet.hpp util/sequence/DNAAlphabet.cpp
 
 ALL_HDR=$(HDR_BASIC) $(HDR_UTIL) $(HDR_SEQUENCE) $(HDR_FAST)
 

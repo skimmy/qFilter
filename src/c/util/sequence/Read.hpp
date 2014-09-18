@@ -2,7 +2,8 @@
 #define READ_H
 
 //#include "DNACompressedSymbol.h"
-//#include "KMer.hpp"
+
+#include "KMer.hpp"
 #include "Sequence.hpp"
 
 #include <string>
@@ -120,7 +121,7 @@ class Read : public Sequence {
    * \return A standard list containing all k-mers.
    *
    */
-  //  list<KMer> getKMerList(size_t k) const;
+  list<KMer> getKMerList(size_t k) const;
 
   // ---------------------------------------------------------
   //                     MODIFY OPERATION

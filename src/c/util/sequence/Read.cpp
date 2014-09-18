@@ -37,14 +37,14 @@ size_t Read::length() const {
   return bases.length();
 }
 
-/*list<KMer> Read::getKMerList(size_t k) const {
+list<KMer> Read::getKMerList(size_t k) const {
   list<KMer> kmersList;
   int M = bases.length() - k + 1;
   for (int i = 0; i < M; i++) {
     kmersList.push_back(KMer(bases.substr(i,k)));
   }
   return kmersList;
-  }*/
+}
 
 /******************** MODIFY OPERATIONS *********************/
 
