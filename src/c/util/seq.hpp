@@ -3,5 +3,6 @@
 
 #include "sequence/Sequence.hpp"
 #include "sequence/Read.hpp"
+#include "sequence/FastqRead.hpp"
 
 #endif
