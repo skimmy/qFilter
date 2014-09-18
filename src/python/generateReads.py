@@ -71,7 +71,7 @@ def generateReads(refSeq, randGenQual, m, M, name="", errDist=None):
             readQual = readQual + SeqIO.QualityIO._phred_to_sanger_quality_str[q]
             temp.append(generateError(q,readSeq[l]))
         readSeq = "".join(temp)       
-        readHead = "@%s:%d pos=%d NoErr=%s Pe=%f" % (name, i, j, str(readSeqNoErr), readErrorProb)
+        readHead = "@%s:%d pos=%d NoErr=%s Pe=%.15f" % (name, i, j, str(readSeqNoErr), readErrorProb)
         if outFileHandler != None:
             outFileHandler.write(readHead + "\n" + readSeq + "\n+\n" + readQual + "\n")
         else:

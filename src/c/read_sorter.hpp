@@ -2,7 +2,7 @@
 #define _READ_SORTER_H_
 
 #include "fasta_reader.hpp"
-//#include "util/stxxl_helper.hpp"
+#include "util/seq.hpp"
 
 #include <float.h>
 #include <cstdint>
@@ -79,9 +79,11 @@ class ReadRecordWrapper {
    */
   ReadRecordWrapper();
   ReadRecordWrapper(char* read_seq, char* read_quals, read_header* header);
+  ReadRecordWrapper(const FastqRead& reas);
   ~ReadRecordWrapper();
 
   friend std::ostream& operator<< (std::ostream& os, const ReadRecordWrapper& record);
+  read_record_t* getRecord();
 
  private:
   void HeaderToRecord(read_header* header, read_record_t* record);

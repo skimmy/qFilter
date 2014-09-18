@@ -26,12 +26,24 @@ ReadRecordWrapper::~ReadRecordWrapper() {
   this->read = NULL;
 }
 
-ReadRecordWrapper::ReadRecordWrapper(char* read_seq, char* read_quals, read_header* header)  : ReadRecordWrapper() {
+ReadRecordWrapper::ReadRecordWrapper(char* read_seq, char* read_quals, read_header* header) 
+  : ReadRecordWrapper()
+{
   this->read->actual_read_length = min((int)strlen(read_seq), MAX_READ_LENGTH);
   strncpy(this->read->sequence, read_seq, this->read->actual_read_length);
   strncpy(this->read->qualities, read_quals, this->read->actual_read_length);
-  HeaderToRecord(header, this->read);
-  
+  HeaderToRecord(header, this->read); 
+}
+
+ReadRecordWrapper::ReadRecordWrapper(const FastqRead& read) 
+  : ReadRecordWrapper()
+{
+  this->read->actual_read_length = min((int) read.length(), MAX_READ_LENGTH);
+  strncpy(this->read->sequence, read.getBases().c_str(), this->read->actual_read_length);
+  strncpy(this->read->qualities, read.getQualities().c_str(), this->read->actual_read_length);
+  read_header header;
+  string_to_header_regex(read.getHeader().c_str(), &header);
+  this->HeaderToRecord(&header, this->read);
 }
 
 // WARNING: this method does not check the validity of the fields in the
@@ -49,9 +61,14 @@ void ReadRecordWrapper::HeaderToRecord(read_header* header, read_record_t* recor
   if (header->original != NULL) {
     tmp = min(MAX_READ_LENGTH, (int)strlen(header->original));
     strncpy(record->original, header->original, tmp);
-  }
-  
+  }  
 }
+
+read_record_t* ReadRecordWrapper::getRecord() {
+  return this->read;
+}
+
+
 
 std::ostream& operator<< (std::ostream& os, const ReadRecordWrapper& record) {
   return os;
