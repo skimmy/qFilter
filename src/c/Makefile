@@ -1,5 +1,5 @@
 SRC=fasta_reader.cpp read_sorter.cpp util/debug.cpp
-HDR=fasta_read.h read_sorter.h util/debug.h
+HDR=fasta_read.h read_sorter.h util/debug.h util/stxxl_helper.h
 OUT=reader.out
 
 GXX=g++

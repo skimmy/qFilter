@@ -2,6 +2,7 @@
 #define _READ_SORTER_H_
 
 #include "fasta_reader.h"
+//#include "util/stxxl_helper.h"
 
 #include <float.h>
 #include <cstdint>
@@ -83,5 +84,14 @@ class ReadRecordWrapper {
   void HeaderToRecord(read_header* header, read_record_t* record);
   
 };
+
+class ReadRecordSorter {
+ private:
+  read_record_t* v;
+  
+ public:
+};
+
+
 
 #endif
