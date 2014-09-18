@@ -1,6 +1,8 @@
 #include "fasta_reader.hpp"
 #include "read_sorter.hpp"
 
+#include "util/seq.hpp"
+
 /* 
  * This is the POSIX regex for the (custom) reads header.
  * The header is in the form:
@@ -187,16 +189,14 @@ void header_free(read_header* head) {
 
 int main(int argc, char** argv)
 {
-  // manual parsing
-  // read_header header
-  // header_parse_error_message(string_to_read_header(example, &header));  
-  // printf("\n");
-
   printf("%d", PADDING_LENGTH);
   Debug::message("AA", "hi!!");
  
   // regex parsing
   read_header header_regex;  
   string_to_header_regex(example.c_str(), &header_regex);
+  Read r;
+  r.setHeader(example);
+  std::cout << r.getHeader() << std::endl;
   return 0;
 }

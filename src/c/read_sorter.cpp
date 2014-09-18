@@ -5,6 +5,8 @@
 
 #include "read_sorter.hpp"
 
+#include "util/seq.hpp"
+
 read_record_t read_record_min; 
 read_record_t read_record_max; 
 
@@ -55,4 +57,3 @@ std::ostream& operator<< (std::ostream& os, const ReadRecordWrapper& record) {
   return os;
 }
 
-//void sort
