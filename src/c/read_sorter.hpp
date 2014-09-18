@@ -1,11 +1,12 @@
 #ifndef _READ_SORTER_H_
 #define _READ_SORTER_H_
 
-#include "fasta_reader.h"
-//#include "util/stxxl_helper.h"
+#include "fasta_reader.hpp"
+//#include "util/stxxl_helper.hpp"
 
 #include <float.h>
 #include <cstdint>
+#include <iostream>
 
 #define WORD_SIZE         8
 #define MAX_NAME_LENGTH   512
@@ -79,6 +80,8 @@ class ReadRecordWrapper {
   ReadRecordWrapper();
   ReadRecordWrapper(char* read_seq, char* read_quals, read_header* header);
   ~ReadRecordWrapper();
+
+  friend std::ostream& operator<< (std::ostream& os, const ReadRecordWrapper& record);
 
  private:
   void HeaderToRecord(read_header* header, read_record_t* record);

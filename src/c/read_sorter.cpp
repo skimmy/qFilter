@@ -3,7 +3,7 @@
 
 #include <algorithm>
 
-#include "read_sorter.h"
+#include "read_sorter.hpp"
 
 read_record_t read_record_min; 
 read_record_t read_record_max; 
@@ -50,3 +50,9 @@ void ReadRecordWrapper::HeaderToRecord(read_header* header, read_record_t* recor
   }
   
 }
+
+std::ostream& operator<< (std::ostream& os, const ReadRecordWrapper& record) {
+  return os;
+}
+
+//void sort

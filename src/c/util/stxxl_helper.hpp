@@ -3,7 +3,7 @@
 
 #include <stxxl/sorter>
 
-#include "../read_sorter.h"
+#include "../read_sorter.hpp"
 
 #define DEFAULT_BLOCK_SIZE 4096
 
