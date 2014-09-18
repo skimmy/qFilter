@@ -24,9 +24,11 @@ int main(int argc, char** argv)
   // is sequence framework from old libbio working???
   FastqRead r;
   std::ifstream ifs(argv[1]);
-  while(!ifs.eof()) {
+  int i = 10;
+  while(!ifs.eof() && i > 0) {
     ifs >> r;
-    std::cout << r.getBases() << std::endl;
+    std::cout << r.getHeader() << std::endl;
+    i--;
   }
   return 0;
 }
