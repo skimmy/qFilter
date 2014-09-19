@@ -115,3 +115,6 @@ tramp
 *.exe
 *.out
 *.app
+
+# Cygwin dumped stack
+*.stackdump
