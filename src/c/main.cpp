@@ -6,12 +6,16 @@
 #include "fasta_reader.hpp"
 #include "read_sorter.hpp"
 
+#include "util/options.hpp"
 #include "util/seq.hpp"
 
 string example = "@ecoli_sample:0 pos=510030 NoErr=GACAATTGCCTGCCAGCGGA Pe=0.115553";
 
 int main(int argc, char** argv)
 {
+  // qFilter options
+  QFilterOptions opts(argc,argv);
+  
   __out_enabled = 0;
 
   // regex parsing
