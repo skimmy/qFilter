@@ -17,20 +17,6 @@ typedef stxxl::sorter<read_record_t, ReadRecordComparator, DEFAULT_BLOCK_SIZE> r
 /**
  * \brief sort fastq file using stxxl external sorting
  */
-void sortFastqReadStxxl(std::ifstream & input, std::ofstream& sorted) {
-  FastqRead r;
-  
-  read_record_sorter sorter(ReadRecordComparator(), DEFAULT_MEM_SIZE);
-  
-  while(!input.eof()) {
-    input >> r;
-    ReadRecordWrapper(r);
-    sorter.push(r.cloneRecord());
-  }
-  sorter.sort();
-  // while(!sorter.empy()) {
-
-  // } 
-}
+void sortFastqReadStxxl(std::ifstream & input, std::ofstream& sorted);
 
 #endif

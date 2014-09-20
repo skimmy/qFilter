@@ -25,6 +25,12 @@ int main(int argc, char** argv)
 
   FastqRead r;
   std::ifstream ifs(argv[1]);
+  // ifs >> r;
+  // ReadRecordWrapper rrw1(r);
+  // ReadRecordWrapper rrw2(rrw1.cloneRecord());
+  // std::cout << rrw1.getRecord()->sequence << std::endl;
+  // std::cout << rrw2.getRecord()->sequence << std::endl;
+
   string outFile = string(argv[1]) + ".out";
   std::ofstream ofs(outFile);
   sortFastqReadStxxl(ifs, ofs);

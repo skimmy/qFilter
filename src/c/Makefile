@@ -1,6 +1,6 @@
 # All objcet files
 BASIC_OBJS=fasta_reader.o read_sorter.o
-UTIL_OBJS=util/debug.o util/options.o
+UTIL_OBJS=util/debug.o util/options.o util/stxxl_helper.o
 LIB_BIO_OBJS=util/sequence/Read.o util/sequence/FastqRead.o util/fast/Format.o
 ALL_OBJS=$(BASIC_OBJS) $(UTIL_OBJS) $(LIB_BIO_OBJS)
 
@@ -32,13 +32,16 @@ COMPATIBILITY=-std=c++11
 ALL_OPTIONS_DEBUG=$(WARNINGS) $(OPTIMIZATIONS) $(DEBUG) $(ALL_CONDITIONALS) $(COMPATIBILITY)
 ALL_OPTIONS_RELEASE=$(OPTIMIZATIONS) $(COMPATIBILITY)
 
+# dynamic linked libraries
+LIBS=-lpthread -lstxxl
+
 # Compiler and flags
 CXX=g++
 CXXFLAGS=$(ALL_OPTIONS_DEBUG)
 
 
 $(OUT): $(MAIN) $(ALL_OBJS)
-	$(CXX) $(ALL_OPTIONS_DEBUG) $(MAIN) $(ALL_OBJS) -o $(OUT)
+	$(CXX) $(ALL_OPTIONS_DEBUG) $(MAIN) $(ALL_OBJS) $(LIBS) -o $(OUT)
 
 .PHONY: clean
 clean:	
