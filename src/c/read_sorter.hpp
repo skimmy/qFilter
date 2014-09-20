@@ -4,9 +4,13 @@
 #include "fasta_reader.hpp"
 #include "util/seq.hpp"
 
+#include "util/stxxl_helper.hpp"
+
 #include <float.h>
 #include <cstdint>
 #include <iostream>
+
+// -------------------- CONSTANTS --------------------
 
 #define WORD_SIZE         8
 #define MAX_NAME_LENGTH   512
@@ -25,6 +29,8 @@
  *       - a padding part used for summing to 4096 bytes for the size
  */ 
 
+//-------------------- read_record_t --------------------
+
 typedef struct {
   uint64_t id;
   int64_t sequencing_position;
@@ -41,6 +47,8 @@ typedef struct {
 
 extern read_record_t read_record_min;
 extern read_record_t read_record_max;
+
+// -------------------- ReadRecordComparator --------------------
 
 /**
  * This is the comparator for the read_record_t struct that is used to run
@@ -63,6 +71,8 @@ class ReadRecordComparator {
     
   }
 };
+
+// -------------------- ReadRecordWrapper --------------------
 
 /**
  * This class is used for convenience and it is basically a wrapper class for
@@ -91,5 +101,9 @@ class ReadRecordWrapper {
   void HeaderToRecord(read_header* header, read_record_t* record);
   
 };
+
+// -------------------- SORT FUNCTIONS --------------------
+
+void sortFastq(const std::string& inFilePath, const std::string& outFilePath);
 
 #endif

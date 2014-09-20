@@ -2,10 +2,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include <iostream>
 #include <algorithm>
 
 #include "read_sorter.hpp"
-#include "util/seq.hpp"
 
 read_record_t read_record_min; 
 read_record_t read_record_max; 
@@ -77,14 +77,6 @@ read_record_t* ReadRecordWrapper::getRecord() {
 read_record_t ReadRecordWrapper::cloneRecord() {
   read_record_t clone;
   memcpy(&clone, this->read, sizeof(read_record_t));
-  // clone.id = this->read->id;
-  // clone.sequencing_position = this->read->sequencing_position;
-  // clone.error_probability = this->read->error_probability;
-  // clone.actual_read_length = this->read->actual_read_length;
-  // strncpy(clone.sequence, this->read->sequence, MAX_READ_LENGTH);
-  // strncpy(clone.qualities, this->read->qualities, MAX_READ_LENGTH);
-  // strncpy(clone.name, this->read->name, MAX_READ_LENGTH);
-  // strncpy(clone.original, this->read->original, MAX_READ_LENGTH);
   return clone;
 }
 
@@ -96,8 +88,14 @@ std::ostream& operator<< (std::ostream& os, const ReadRecordWrapper& record) {
   os << header << std::endl;
   os << record.read->sequence << "+" << std::endl;
   os << record.read->qualities << std::endl;
-  
-
   return os;
 }
  
+void sortFastq(const std::string& inFilePath, const std::string& outFilePath) {
+  std::ifstream ifs(inFilePath);
+  std::ofstream ofs(outFilePath);
+  sortFastqReadStxxl(ifs, ofs);
+  ifs.close();
+  ofs.close();
+}
+

@@ -1,5 +1,7 @@
 #include "stxxl_helper.hpp"
 
+typedef stxxl::sorter<read_record_t, ReadRecordComparator, DEFAULT_BLOCK_SIZE> read_record_sorter;
+
 void sortFastqReadStxxl(std::ifstream & input, std::ofstream& sorted) {
   FastqRead r;
   

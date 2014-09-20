@@ -18,36 +18,11 @@ int main(int argc, char** argv)
   QFilterOptions opts(argc,argv);
   
   __out_enabled = 0;
-  
-  // regex parsing
-  read_header header_regex;  
-  string_to_header_regex(example.c_str(), &header_regex);
 
-  FastqRead r;
-  std::ifstream ifs(argv[1]);
-  // ifs >> r;
-  // ReadRecordWrapper rrw1(r);
-  // ReadRecordWrapper rrw2(rrw1.cloneRecord());
-  // std::cout << rrw1.getRecord()->sequence << std::endl;
-  // std::cout << rrw2.getRecord()->sequence << std::endl;
-
+  // sorting
+  string inFile = argv[1];
   string outFile = string(argv[1]) + ".out";
-  std::ofstream ofs(outFile);
-  sortFastqReadStxxl(ifs, ofs);
-  //  std::ofstream ofs((string(argv[1]) + ))
-  
-  // int i = 10;
-  // while(!ifs.eof() && i > 0) {
-  //   ifs >> r;
-  //   ReadRecordWrapper rrw(r);    
-  //   //    std::cout << r.getQualities() << std::endl;
-  //   std::cout << rrw.getRecord()->id << std::endl
-  // 	      << rrw.getRecord()->sequence << std::endl
-  // 	      << rrw.getRecord()->qualities << std::endl
-  // 	      << rrw.getRecord()->error_probability << std::endl
-  // 	      << std::endl;
-  //   std::cout.flush();
-  //   i--;
-  // } 
+  sortFastq(inFile, outFile);
+
   return 0;
 }
