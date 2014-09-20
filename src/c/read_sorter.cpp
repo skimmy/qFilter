@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include <algorithm>
 
@@ -45,6 +46,12 @@ ReadRecordWrapper::ReadRecordWrapper(const FastqRead& read)
   this->HeaderToRecord(&header, this->read);
 }
 
+ReadRecordWrapper::ReadRecordWrapper(const read_record_t& record)
+{
+  this->read = new read_record_t;
+  memcpy(this->read, &record, sizeof(read_record_t));
+}
+
 // WARNING: this method does not check the validity of the fields in the
 // heder pointer, nor does it check if such pointer is valid (be aware).
 void ReadRecordWrapper::HeaderToRecord(read_header* header, read_record_t* record) {
@@ -68,20 +75,29 @@ read_record_t* ReadRecordWrapper::getRecord() {
 }
 
 read_record_t ReadRecordWrapper::cloneRecord() {
- read_record_t clone;
-  clone.id = this->read->id;
-  clone.sequencing_position = this->read->sequencing_position;
-  clone.error_probability = this->read->error_probability;
-  clone.actual_read_length = this->read->actual_read_length;
-  strncpy(clone.sequence, this->read->sequence, MAX_READ_LENGTH);
-  strncpy(clone.qualities, this->read->qualities, MAX_READ_LENGTH);
-  strncpy(clone.name, this->read->name, MAX_READ_LENGTH);
-  strncpy(clone.original, this->read->original, MAX_READ_LENGTH);
+  read_record_t clone;
+  memcpy(&clone, this->read, sizeof(read_record_t));
+  // clone.id = this->read->id;
+  // clone.sequencing_position = this->read->sequencing_position;
+  // clone.error_probability = this->read->error_probability;
+  // clone.actual_read_length = this->read->actual_read_length;
+  // strncpy(clone.sequence, this->read->sequence, MAX_READ_LENGTH);
+  // strncpy(clone.qualities, this->read->qualities, MAX_READ_LENGTH);
+  // strncpy(clone.name, this->read->name, MAX_READ_LENGTH);
+  // strncpy(clone.original, this->read->original, MAX_READ_LENGTH);
   return clone;
 }
 
 
 std::ostream& operator<< (std::ostream& os, const ReadRecordWrapper& record) {
+  char header[2048];
+  sprintf(header, "@%s:%d pos=%d NoErr=%s Pe=%.15f", record.read->name, (int)record.read->id, 
+	  (int)record.read->sequencing_position, record.read->original, record.read->error_probability);
+  os << header << std::endl;
+  os << record.read->sequence << "+" << std::endl;
+  os << record.read->qualities << std::endl;
+  
+
   return os;
 }
  
