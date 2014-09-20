@@ -80,23 +80,16 @@ class ReadRecordWrapper {
   ReadRecordWrapper();
   ReadRecordWrapper(char* read_seq, char* read_quals, read_header* header);
   ReadRecordWrapper(const FastqRead& reas);
+  ReadRecordWrapper(const read_record_t& record);
   ~ReadRecordWrapper();
 
-  friend std::ostream& operator<< (std::ostream& os, const ReadRecordWrapper& record);
   read_record_t* getRecord();
+  read_record_t cloneRecord();
 
+  friend std::ostream& operator<< (std::ostream& os, const ReadRecordWrapper& record);
  private:
   void HeaderToRecord(read_header* header, read_record_t* record);
   
 };
-
-class ReadRecordSorter {
- private:
-  read_record_t* v;
-  
- public:
-};
-
-
 
 #endif

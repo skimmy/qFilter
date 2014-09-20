@@ -37,7 +37,7 @@ CXX=g++
 CXXFLAGS=$(ALL_OPTIONS_DEBUG)
 
 
-$(OUT): $(ALL_SRC) $(ALL_OBJS)
+$(OUT): $(MAIN) $(ALL_OBJS)
 	$(CXX) $(ALL_OPTIONS_DEBUG) $(MAIN) $(ALL_OBJS) -o $(OUT)
 
 .PHONY: clean
