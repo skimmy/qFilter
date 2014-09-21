@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <iostream>
+#include <vector>
 #include <algorithm>
 
 #include "read_sorter.hpp"
@@ -87,9 +87,32 @@ std::ostream& operator<< (std::ostream& os, const ReadRecordWrapper& record) {
   sprintf(header, "@%s:%d pos=%d NoErr=%s Pe=%.15f", record.read->name, (int)record.read->id, 
 	  (int)record.read->sequencing_position, record.read->original, record.read->error_probability);
   os << header << std::endl;
-  os << record.read->sequence << "+" << std::endl;
+  os << record.read->sequence << std::endl << "+" << std::endl;
   os << record.read->qualities << std::endl;
 return os;
+}
+
+void sortFastqInternal(std::ifstream& input, std::ofstream& sorted) {
+  FastqRead r;  
+  std::vector<read_record_t> v;
+  
+  while(!input.eof()) {
+    input >> r;
+    ReadRecordWrapper rrw(r);
+    read_record_t rrt = rrw.cloneRecord();
+    v.push_back(rrt);
+  }
+  std::sort(v.begin(), v.end(), ReadRecordComparator());
+  for (uint64_t i = 0; i < v.size(); ++i) {
+    //std::cout << (int)v[i].id << " " << v[i].error_probability << std::endl;
+    ReadRecordWrapper rrw(v[i]);
+    sorted << rrw;
+  }
+  // while(!sorter.empty()) {
+  //   
+  //   
+  //   ++sorter;
+  // } 
 }
  
 void sortFastq(const std::string& inFilePath, const std::string& outFilePath) {
@@ -97,8 +120,10 @@ void sortFastq(const std::string& inFilePath, const std::string& outFilePath) {
   std::ofstream ofs(outFilePath);
   if (!_IS_APPLE_) {
     sortFastqReadStxxl(ifs, ofs);
+    //sortFastqInternal(ifs, ofs);
   } else {
     std::cout << "Mac OS detected!! Can't use stxxl" << std::endl;
+    sortFastqInternal(ifs, ofs);
   }
   ifs.close();
   ofs.close();
