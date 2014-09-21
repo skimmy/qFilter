@@ -1,6 +1,13 @@
 #ifndef _READ_SORTER_H_
 #define _READ_SORTER_H_
 
+#ifdef __APPLE__
+#define _IS_APPLE_ 1
+#else
+#define _IS_APPLE_ 0
+#endif
+
+
 #include "fasta_reader.hpp"
 #include "util/seq.hpp"
 

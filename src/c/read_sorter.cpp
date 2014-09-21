@@ -7,6 +7,7 @@
 
 #include "read_sorter.hpp"
 
+
 read_record_t read_record_min; 
 read_record_t read_record_max; 
 
@@ -88,13 +89,17 @@ std::ostream& operator<< (std::ostream& os, const ReadRecordWrapper& record) {
   os << header << std::endl;
   os << record.read->sequence << "+" << std::endl;
   os << record.read->qualities << std::endl;
-  return os;
+return os;
 }
  
 void sortFastq(const std::string& inFilePath, const std::string& outFilePath) {
   std::ifstream ifs(inFilePath);
   std::ofstream ofs(outFilePath);
-  sortFastqReadStxxl(ifs, ofs);
+  if (!_IS_APPLE_) {
+    sortFastqReadStxxl(ifs, ofs);
+  } else {
+    std::cout << "Mac OS detected!! Can't use stxxl" << std::endl;
+  }
   ifs.close();
   ofs.close();
 }
