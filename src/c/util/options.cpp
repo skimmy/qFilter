@@ -5,6 +5,8 @@
 
 #include "options.hpp"
 
+QFilterOptions opts;
+
 void printUsage(std::ostream& os, const char* name, int exitCode) {
   os << "Usage:\n\t" << name << " [OPTIONS] fastq_file\n";
   exit(exitCode);
@@ -16,6 +18,10 @@ const struct option longOptions[] =
     {"help", 0, NULL, 'h'},
     {"use-stdxxl", 0, NULL, 'X'}
   };
+
+QFilterOptions::QFilterOptions() {
+  this->SetDefaultValues();
+}
 
 QFilterOptions::QFilterOptions(int argn, char** argv) {
   this->SetDefaultValues();

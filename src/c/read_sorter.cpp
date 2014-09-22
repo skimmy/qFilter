@@ -6,6 +6,7 @@
 #include <algorithm>
 
 #include "read_sorter.hpp"
+#include "util/options.hpp"
 
 
 read_record_t read_record_min; 
@@ -118,13 +119,15 @@ void sortFastqInternal(std::ifstream& input, std::ofstream& sorted) {
 void sortFastq(const std::string& inFilePath, const std::string& outFilePath) {
   std::ifstream ifs(inFilePath);
   std::ofstream ofs(outFilePath);
-  if (!_IS_APPLE_) {
-    sortFastqReadStxxl(ifs, ofs);
-    //sortFastqInternal(ifs, ofs);
-  } else {
-    std::cout << "Mac OS detected!! Can't use stxxl" << std::endl;
-    sortFastqInternal(ifs, ofs);
-  }
+  std::cout << opts.getFastqFilePath() << std::endl;
+  sortFastqReadStxxl(ifs, ofs);
+  // if (!_IS_APPLE_) {
+  //   sortFastqReadStxxl(ifs, ofs);
+  //   //sortFastqInternal(ifs, ofs);
+  // } else {
+  //   std::cout << "Mac OS detected!! Can't use stxxl" << std::endl;
+  //   sortFastqInternal(ifs, ofs);
+  // }
   ifs.close();
   ofs.close();
 }
