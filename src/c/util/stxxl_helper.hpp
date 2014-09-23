@@ -9,7 +9,7 @@
 #include "seq.hpp"
 #include "../read_sorter.hpp"
 
-#define DEFAULT_BLOCK_SIZE 4096
+#define DEFAULT_BLOCK_SIZE 16 * 4096
 #define DEFAULT_MEM_SIZE   (1024 * 1024 * 64)
 
 /**

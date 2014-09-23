@@ -95,8 +95,7 @@ return os;
 
 void sortFastqInternal(std::ifstream& input, std::ofstream& sorted) {
   FastqRead r;  
-  std::vector<read_record_t> v;
-  
+  std::vector<read_record_t> v;  
   while(!input.eof()) {
     input >> r;
     ReadRecordWrapper rrw(r);
@@ -105,15 +104,9 @@ void sortFastqInternal(std::ifstream& input, std::ofstream& sorted) {
   }
   std::sort(v.begin(), v.end(), ReadRecordComparator());
   for (uint64_t i = 0; i < v.size(); ++i) {
-    //std::cout << (int)v[i].id << " " << v[i].error_probability << std::endl;
     ReadRecordWrapper rrw(v[i]);
     sorted << rrw;
   }
-  // while(!sorter.empty()) {
-  //   
-  //   
-  //   ++sorter;
-  // } 
 }
  
 void sortFastq(const std::string& inFilePath, const std::string& outFilePath) {
@@ -121,13 +114,6 @@ void sortFastq(const std::string& inFilePath, const std::string& outFilePath) {
   std::ofstream ofs(outFilePath);
   std::cout << opts.getFastqFilePath() << std::endl;
   sortFastqReadStxxl(ifs, ofs);
-  // if (!_IS_APPLE_) {
-  //   sortFastqReadStxxl(ifs, ofs);
-  //   //sortFastqInternal(ifs, ofs);
-  // } else {
-  //   std::cout << "Mac OS detected!! Can't use stxxl" << std::endl;
-  //   sortFastqInternal(ifs, ofs);
-  // }
   ifs.close();
   ofs.close();
 }
