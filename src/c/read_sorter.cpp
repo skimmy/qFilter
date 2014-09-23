@@ -76,10 +76,9 @@ read_record_t* ReadRecordWrapper::getRecord() {
   return this->read;
 }
 
-read_record_t ReadRecordWrapper::cloneRecord() {
-  read_record_t clone;
-  memcpy(&clone, this->read, sizeof(read_record_t));
-  return clone;
+read_record_t* ReadRecordWrapper::cloneRecord(read_record_t* dest) {
+  memcpy(dest, this->read, sizeof(read_record_t));
+  return dest;
 }
 
 
@@ -99,7 +98,8 @@ void sortFastqInternal(std::ifstream& input, std::ofstream& sorted) {
   while(!input.eof()) {
     input >> r;
     ReadRecordWrapper rrw(r);
-    read_record_t rrt = rrw.cloneRecord();
+    read_record_t rrt;
+    rrw.cloneRecord(&rrt);
     v.push_back(rrt);
   }
   std::sort(v.begin(), v.end(), ReadRecordComparator());

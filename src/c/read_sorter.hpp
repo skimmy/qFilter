@@ -101,7 +101,7 @@ class ReadRecordWrapper {
   ~ReadRecordWrapper();
 
   read_record_t* getRecord();
-  read_record_t cloneRecord();
+  read_record_t* cloneRecord(read_record_t* dest);
 
   friend std::ostream& operator<< (std::ostream& os, const ReadRecordWrapper& record);
  private:

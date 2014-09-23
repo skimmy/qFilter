@@ -12,11 +12,12 @@ void printUsage(std::ostream& os, const char* name, int exitCode) {
   exit(exitCode);
 }
 
-const char* shortOptions = "hX";
+const char* shortOptions = "hXf:";
 const struct option longOptions[] =
   {
     {"help", 0, NULL, 'h'},
-    {"use-stdxxl", 0, NULL, 'X'}
+    {"use-stdxxl", 0, NULL, 'X'},
+    {"fraction", 1, NULL, 'f'}
   };
 
 QFilterOptions::QFilterOptions() {
@@ -35,6 +36,9 @@ std::istream& operator>>(std::istream& is, QFilterOptions& opts) {
   return is;
 }
 std::ostream& operator<<(std::ostream& os, QFilterOptions& otps) {
+  os << "Fastq Input File: " << opts.fastqFilePath << std::endl;
+  os << "Use stxxl library " << opts.stxxl << std::endl;
+  os << "Input fraction    " << opts.fraction << std::endl;
   return os;
 }
 
@@ -49,6 +53,9 @@ void QFilterOptions::ParseCommandLineArguments(int argn, char** argv) {
       break;
     case 'X':
       this->stxxl = true;
+      break;
+    case 'f':
+      this->fraction = atof(optarg);
       break;
     default:
       break;
@@ -66,5 +73,6 @@ void QFilterOptions::ParseCommandLineArguments(int argn, char** argv) {
 
 void QFilterOptions::SetDefaultValues() {
   this->stxxl = false;
+  this->fraction = 1.0;
   this->fastqFilePath = ""; // is this redundant?
 }

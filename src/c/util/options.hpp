@@ -4,9 +4,12 @@
 class QFilterOptions {
   
 private:
-  // list of all the options
-  bool stxxl;
-  std::string fastqFilePath;
+  // list of all the options  
+  std::string fastqFilePath; // <fasq_input>
+  bool stxxl;                // -X: use stxxl
+  double fraction;           // -f: total reads fraction
+
+ 
   
   void SetDefaultValues();
   
@@ -22,6 +25,7 @@ public:
 
   bool isStxxlEnabled() const { return stxxl; }
   std::string getFastqFilePath() const { return fastqFilePath; }
+  double getFraction() const { return fraction; }
 
 
 };

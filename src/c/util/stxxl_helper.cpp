@@ -10,8 +10,8 @@ void sortFastqReadStxxl(std::ifstream & input, std::ofstream& sorted) {
   while(!input.eof()) {
     input >> r;
     ReadRecordWrapper rrw(r);
-    read_record_t rrt = rrw.cloneRecord();
-    //    std::cout << rrt.sequence << std::endl;
+    read_record_t rrt;
+    rrw.cloneRecord(&rrt);
     sorter.push(rrt);
   }
   sorter.sort();
