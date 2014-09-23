@@ -33,7 +33,7 @@ ALL_OPTIONS_DEBUG=$(WARNINGS) $(OPTIMIZATIONS) $(DEBUG) $(ALL_CONDITIONALS) $(CO
 ALL_OPTIONS_RELEASE=$(OPTIMIZATIONS) $(COMPATIBILITY)
 
 # dynamic linked libraries
-LIBS=-lpthread -lstxxl
+LIBS=-lpthread -lstxxl_debug
 
 # Compiler and flags
 CXX=g++
