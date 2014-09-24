@@ -2,12 +2,14 @@
 BASIC_OBJS=fasta_reader.o read_sorter.o
 UTIL_OBJS=util/debug.o util/options.o util/stxxl_helper.o
 LIB_BIO_OBJS=util/sequence/Read.o util/sequence/FastqRead.o util/fast/Format.o
-ALL_OBJS=$(BASIC_OBJS) $(UTIL_OBJS) $(LIB_BIO_OBJS)
+ALIGN_OBJS=align/hamming/HammingDistance.o
+ALL_OBJS=$(BASIC_OBJS) $(UTIL_OBJS) $(LIB_BIO_OBJS) $(ALIGN_OBJS)
 
 # All header files
 HDR_BASIC=fasta_read.hpp read_sorter.hpp
 HDR_UTIL=util/debug.hpp util/options.hpp util/stxxl_helper.hpp
 LIB_BIO_HDR=util/fast/Format.hpp util/seq.hpp util/sequence/Sequence.hpp util/sequence/Read.cpp util/sequence/Read.hpp util/sequence/FastqRead.hpp
+ALIGN_HDR=align/hamming/HammingDistance.hpp
 ALL_HDR=$(HDR_BASIC) $(HDR_UTIL) $(LIB_BIO_HDR)
 
 # The main file(s)
@@ -45,6 +47,7 @@ $(OUT): $(MAIN) $(ALL_OBJS)
 
 .PHONY: clean
 clean:	
+	rm -rf align/hamming/*.o
 	rm -rf util/sequence/*.o
 	rm -rf util/fast/*.o
 	rm -rf util/*.o
