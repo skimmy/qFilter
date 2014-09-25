@@ -2,6 +2,10 @@
 
 import argparse
 
+from Bio import SeqIO
+from Bio.Seq import Seq
+from Bio.SeqRecord import SeqRecord
+
 from scipy import stats
 
 pHigh = 1.0 / 3.0
@@ -11,6 +15,7 @@ def parseArguments():
     parser  = argparse.ArgumentParser()
     parser.add_argument("length", help="length of the generated sequence", type=int)
     parser.add_argument("-a", "--name", help="name of the reference sequence", default="seq_")
+    parser.add_argument("-o", "--output", help="output file path (stdout if None or empy)", default=None)
     return parser.parse_args()
 
 def generateIidSequence(N):
@@ -30,10 +35,20 @@ def generateSequenceWithProbabilityVector(N, probs):
         sequence.append(symbols[dist.rvs()])
     return "".join(sequence)
 
-if __name__ == "__main__":
+if __name__ == "__main__":    
     args = parseArguments()
     n = args.length
     name = args.name
-    print(generateIidSequence(n))
-    print(generateGCRichSequence(n))
-    
+    output = args.output
+    header = (">%s %d" % (name, n))
+    sequence = generateIidSequence(n)
+    # create the SeqRecord object for biopython
+    description= ("%d" % n)
+    record = SeqRecord(Seq(sequence), id=name, name=name, description=description)
+    if output != None and output != "":
+        # output option set use BioPython to write a fasta file
+        f = open(output, "w")
+        SeqIO.write([record], f, "fasta")
+        f.close()
+    else:
+        print ("%s\n%s" % (header, sequence))    
