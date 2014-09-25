@@ -92,18 +92,21 @@ std::ostream& operator<< (std::ostream& os, const ReadRecordWrapper& record) {
 return os;
 }
 
-void sortFastqInternal(std::ifstream& input, std::ofstream& sorted) {
+void sortFastqInternal(std::ifstream& input, std::ofstream& sorted, double fraction) {
   FastqRead r;  
-  std::vector<read_record_t> v;  
+  std::vector<read_record_t> v;
+  size_t count = 0;
   while(!input.eof()) {
     input >> r;
     ReadRecordWrapper rrw(r);
     read_record_t rrt;
     rrw.cloneRecord(&rrt);
     v.push_back(rrt);
+    ++count;
   }
   std::sort(v.begin(), v.end(), ReadRecordComparator());
-  for (uint64_t i = 0; i < v.size(); ++i) {
+  size_t bar_n = fraction * v.size();
+  for (uint64_t i = 0; i < bar_n; ++i) {
     ReadRecordWrapper rrw(v[i]);
     sorted << rrw;
   }
@@ -112,8 +115,13 @@ void sortFastqInternal(std::ifstream& input, std::ofstream& sorted) {
 void sortFastq(const std::string& inFilePath, const std::string& outFilePath) {
   std::ifstream ifs(inFilePath);
   std::ofstream ofs(outFilePath);
-  std::cout << opts.getFastqFilePath() << std::endl;
-  sortFastqReadStxxl(ifs, ofs);
+  double fraction = opts.getFraction();
+  std::cout <<"Fraction ---> "  << fraction << std::endl;
+  if (opts.isStxxlEnabled()) {
+    sortFastqReadStxxl(ifs, ofs, fraction);
+  } else {
+    sortFastqInternal(ifs, ofs, fraction);
+  }
   ifs.close();
   ofs.close();
 }
