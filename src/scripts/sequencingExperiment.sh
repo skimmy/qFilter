@@ -6,5 +6,8 @@
 #     length of the read (default 50)
 #     number of reads or coverage (default 10000 / 10)
 #     quality distribution or sample fastq (default is uniform qualities [0,40])
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> df8ebade9590ea7f6b420c768717a945068dfee0
