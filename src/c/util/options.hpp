@@ -1,6 +1,8 @@
 #ifndef _OPTIONS_H_
 #define _OPTIONS_H_
 
+enum OutputFormat { Fasta, Fastq };
+
 class QFilterOptions {
   
 private:
@@ -8,7 +10,7 @@ private:
   std::string fastqFilePath; // <fasq_input>
   bool stxxl;                // -X: use stxxl
   double fraction;           // -f: total reads fraction
-
+  OutputFormat outFormat;    // -O: output format [int]
  
   
   void SetDefaultValues();
@@ -26,6 +28,7 @@ public:
   bool isStxxlEnabled() const { return stxxl; }
   std::string getFastqFilePath() const { return fastqFilePath; }
   double getFraction() const { return fraction; }
+  OutputFormat getOutputFormat() const { return outFormat; }
 
 
 };

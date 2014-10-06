@@ -82,13 +82,21 @@ read_record_t* ReadRecordWrapper::cloneRecord(read_record_t* dest) {
 }
 
 
-std::ostream& operator<< (std::ostream& os, const ReadRecordWrapper& record) {
+std::ostream& operator<< (std::ostream& os, const ReadRecordWrapper& record) { 
+  
+  OutputFormat outForm = opts.getOutputFormat();
+  char headChar = '>';
+  if (outForm == Fastq) {
+    headChar = '@';
+  }
   char header[2048];
-  sprintf(header, "@%s:%d pos=%d NoErr=%s Pe=%.15f", record.read->name, (int)record.read->id, 
+  sprintf(header, "%c%s:%d pos=%d NoErr=%s Pe=%.15f", headChar, record.read->name, (int)record.read->id, 
 	  (int)record.read->sequencing_position, record.read->original, record.read->error_probability);
   os << header << std::endl;
-  os << record.read->sequence << std::endl << "+" << std::endl;
-  os << record.read->qualities << std::endl;
+  os << record.read->sequence << std::endl;
+  if (outForm == Fastq) {
+    os << "+" << std::endl << record.read->qualities << std::endl;
+  }
 return os;
 }
 
@@ -99,6 +107,7 @@ void sortFastqInternal(std::ifstream& input, std::ofstream& sorted, double fract
   while(!input.eof()) {
     input >> r;
     ReadRecordWrapper rrw(r);
+    // Is it not working?!??!
     if (!(r.getSequenceLength() > 0)) {
       continue;
     }
