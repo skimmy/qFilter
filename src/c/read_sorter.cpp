@@ -99,6 +99,9 @@ void sortFastqInternal(std::ifstream& input, std::ofstream& sorted, double fract
   while(!input.eof()) {
     input >> r;
     ReadRecordWrapper rrw(r);
+    if (!(r.getSequenceLength() > 0)) {
+      continue;
+    }
     read_record_t rrt;
     rrw.cloneRecord(&rrt);
     v.push_back(rrt);
