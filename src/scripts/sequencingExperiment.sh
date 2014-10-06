@@ -44,16 +44,16 @@ echo ""
 # generate the reads
 echo "- GENERATING READS"
 echo "bash generateCustomReads.sh ${sequenceFilePath} ${qualityDistFilePath}"
-#bash generateCustomReads.sh ${sequenceFilePath} ${qualityDistFilePath}
+bash generateCustomReads.sh ${sequenceFilePath} ${qualityDistFilePath}
 echo ""
 
 # PART 2 - READS SORTING
+# sort reads
 echo "- READ SORTING"
 echo "${readSorter} -X ${readsFilePath}"
 $readSorter ${readsFilePath}
 echo ""
 
-# sort reads
 
 # PART 3 - ALIGNMENT
 echo "- ALIGNING READS"
