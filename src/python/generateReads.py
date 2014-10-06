@@ -67,9 +67,10 @@ def generateReads(refSeq, randGenQual, m, M, name="", errDist=None):
         for l in range(len(readSeq)):
             # here quality is generated and errors are introduced
             q = int(randGenQual.rvs())
-            readErrorProb = readErrorProb * (1.0 - qutil.valueToProb(q))
+            readErrorProb = readErrorProb * (1.0 - qutil.valueToProb(q)) # P = P * 10^(-Q/10) 
             readQual = readQual + SeqIO.QualityIO._phred_to_sanger_quality_str[q]
             temp.append(generateError(q,readSeq[l]))
+        readErrorProb = 1.0 - readErrorProb
         readSeq = "".join(temp)       
         readHead = "@%s:%d pos=%d NoErr=%s Pe=%.15f" % (name, i, j, str(readSeqNoErr), readErrorProb)
         if outFileHandler != None:
