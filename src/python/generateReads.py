@@ -11,6 +11,7 @@ from Bio import SeqIO
 import qualityUtil as qutil
 
 outFileHandler = None
+generateErrors = True
 
 def parseArguments():
     parser = argparse.ArgumentParser()
@@ -19,6 +20,7 @@ def parseArguments():
     parser.add_argument("-M", "--number", help="number of generated reads", type=int, default=1000)
     parser.add_argument("-m", "--length", help="length of a single read", type=int, default=100)
     parser.add_argument("-o", "--output", help="fastq for the output")
+    parser.add_argument("-E", "--noerror", help="if selected reads are generated with no error", action="store_true")
     return parser.parse_args()
 
 def getRandomGenerator(freqs):
@@ -64,12 +66,13 @@ def generateReads(refSeq, randGenQual, m, M, name="", errDist=None):
         readSeqNoErr = str(readSeq)
         temp = []
         readErrorProb = 1.0
-        for l in range(len(readSeq)):
-            # here quality is generated and errors are introduced
-            q = int(randGenQual.rvs())
-            readErrorProb = readErrorProb * (1.0 - qutil.valueToProb(q)) # P = P * 10^(-Q/10) 
-            readQual = readQual + SeqIO.QualityIO._phred_to_sanger_quality_str[q]
-            temp.append(generateError(q,readSeq[l]))
+        if generateErrors:
+            for l in range(len(readSeq)):
+                # here quality is generated and errors are introduced
+                q = int(randGenQual.rvs())
+                readErrorProb = readErrorProb * (1.0 - qutil.valueToProb(q)) # P = P * 10^(-Q/10) 
+                readQual = readQual + SeqIO.QualityIO._phred_to_sanger_quality_str[q]
+                temp.append(generateError(q,readSeq[l]))
         readErrorProb = 1.0 - readErrorProb
         readSeq = "".join(temp)       
         readHead = "@%s:%d pos=%d NoErr=%s Pe=%.15f" % (name, i, j, str(readSeqNoErr), readErrorProb)
@@ -88,6 +91,8 @@ if __name__ == "__main__":
     outFileName = args.output
     if outFileName != None:
         outFileHandler = open(outFileName, "w")
+    if args.noerrors != None:
+        generateErrors = False
     print "\nReference: %s\nDistribution: %s\n(M,m) = (%d, %d)\n" % (referenceFileName, distFileName,M,m)
     refSeq = loadReferenceSequence(referenceFileName)
     qDist = getRandomGenerator(loadDistribution(distFileName))
