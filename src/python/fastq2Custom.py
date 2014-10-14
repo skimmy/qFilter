@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import argparse
+import re
 
 from Bio import SeqIO
 
@@ -27,10 +28,11 @@ if __name__ == "__main__":
         qualities = read.letter_annotations["phred_quality"]
         readProb = qutil.valuesToProbIID(qualities)
         # we may try to derive name and id from read.name
-        readHead = "@%s:%d pos=%d NoErr=%s Pe=%.15f" % (read.name, i, -1, "", float(1.0 - readProb))        
+        readName = (re.split("\.|:|,|\|", read.id))[0]        
+        readHead = "%s:%d pos=%d NoErr=%s Pe=%.15f" % (readName[0:4], i, 0, str(read.seq), float(1.0 - readProb))        
         read.id = readHead
         read.description = ""
-        print(read.format("fastq"))
+
         outFileHandler.write(read.format("fastq"))
         i += 1
     # close files

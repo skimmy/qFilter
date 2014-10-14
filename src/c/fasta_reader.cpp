@@ -12,7 +12,7 @@
  **/
 //char* header_re_string = 
 string header_re_string = 
-  "@([_A-Za-z0-1]+):([_A-Za-z0-9]+) pos=([0-9]+) NoErr=([ACGT]+) Pe=([0-1].[0-9]+)$";
+  "@([_A-Za-z0-9]+):([_A-Za-z0-9]+) pos=([0-9]+) NoErr=([ACGTN]+) Pe=([0-1].[0-9]+)$";
 
 void header_parse_error_message(int error) {
   switch(error) {
@@ -38,36 +38,36 @@ void header_parse_error_message(int error) {
  *  str    the string containing the raw read header
  *  head   an valid pointer to a read_header structure
  */
-int string_to_read_header(const char* str, read_header * head) {
-  // support string and its index
-  char* tmp = (char*) malloc(DEFAULT_STRING_SIZE);
-  size_t j = 0;  
+// int string_to_read_header(const char* str, read_header * head) {
+//   // support string and its index
+//   char* tmp = (char*) malloc(DEFAULT_STRING_SIZE);
+//   size_t j = 0;  
 
-  // first character must be '@'
-  if (*str != '@') {
-    return ERR_TRAILING_AT;
-  }
-  str++;
-  j = 0;
-  tmp[j] = '\0';
-  while(*str != ':') {
-    if (*str == '\0') {     
-      // end of string reached before finding ':'
-      return ERR_NO_ID_DIVIDER;
-    }
-    tmp[j++] = *str;
-    str++;
-  }
-  str++;
-  tmp[j] = '\0';
-  printf("%s\n",tmp);
+//   // first character must be '@'
+//   if (*str != '@') {
+//     return ERR_TRAILING_AT;
+//   }
+//   str++;
+//   j = 0;
+//   tmp[j] = '\0';
+//   while(*str != ':') {
+//     if (*str == '\0') {     
+//       // end of string reached before finding ':'
+//       return ERR_NO_ID_DIVIDER;
+//     }
+//     tmp[j++] = *str;
+//     str++;
+//   }
+//   str++;
+//   tmp[j] = '\0';
+//   printf("%s\n",tmp);
   
-  // all ok return the no error code
-  return NO_ERR;
+//   // all ok return the no error code
+//   return NO_ERR;
 
-  free(tmp);
-  tmp = NULL;     
-}
+//   free(tmp);
+//   tmp = NULL;     
+// }
 
 int string_to_header_regex(const char* str, read_header* head) {
   int nmatches = 6;
