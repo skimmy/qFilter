@@ -9,6 +9,10 @@ void sortFastqReadStxxl(std::ifstream & input, std::ofstream& sorted, double fra
   size_t count = 0;
   
   while(!input.eof()) {
+    if ((count % 10000) == 0) {
+      std::cout << count << std::endl;
+      std::cout.flush();
+    }
     input >> r;
     ReadRecordWrapper rrw(r);
     read_record_t rrt;
@@ -16,6 +20,9 @@ void sortFastqReadStxxl(std::ifstream & input, std::ofstream& sorted, double fra
     sorter.push(rrt);
     ++count;
   }
+  std::cout << "Loaded " << count << " reads" << std::endl;
+  std::cout << "Sorting (stxxl)..." << std::endl;
+  std::cout.flush();
   sorter.sort();
   size_t bar_n = count * fraction;
   size_t i = 0;
