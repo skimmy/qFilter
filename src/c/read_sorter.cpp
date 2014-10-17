@@ -105,6 +105,10 @@ void sortFastqInternal(std::ifstream& input, std::ofstream& sorted, double fract
   std::vector<read_record_t> v;
   size_t count = 0;
   while(!input.eof()) {
+    if ((count % 10000) == 0) {
+      std::cout << count << std::endl;
+      std::cout.flush();
+    }
     input >> r;
     ReadRecordWrapper rrw(r);
     // Is it not working?!??!

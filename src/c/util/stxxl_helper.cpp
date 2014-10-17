@@ -9,6 +9,10 @@ void sortFastqReadStxxl(std::ifstream & input, std::ofstream& sorted, double fra
   size_t count = 0;
   
   while(!input.eof()) {
+    if ((count % 10000) == 0) {
+      std::cout << count << std::endl;
+      std::cout.flush();
+    }
     input >> r;
     ReadRecordWrapper rrw(r);
     read_record_t rrt;
