@@ -12,9 +12,10 @@
 
 #define DEFAULT_STRING_SIZE  1024
 
-#define NO_ERR 0             /* Code for no error occured  */
-#define ERR_TRAILING_AT 1    /* Can't find '@' at the begin */
-#define ERR_NO_ID_DIVIDER 2  /* Can't find the ':' divider */
+#define NO_ERR 0               /* Code for no error occured  */
+#define ERR_TRAILING_AT 1      /* Can't find '@' at the begin */
+#define ERR_NO_ID_DIVIDER 2    /* Can't find the ':' divider */
+#define ERR_NO_CUSTOM_FORMAT 3 /* Generi error for header not in custom format */
 
 #define REGEX_NO_MATCH 100   /* Regex test not passed */
 

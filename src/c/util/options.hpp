@@ -11,6 +11,7 @@ private:
   bool stxxl;                // -X: use stxxl
   double fraction;           // -f: total reads fraction
   OutputFormat outFormat;    // -O: output format [int]
+  size_t readsCount;         // -M: maximum reads output
  
   
   void SetDefaultValues();
@@ -29,7 +30,7 @@ public:
   std::string getFastqFilePath() const { return fastqFilePath; }
   double getFraction() const { return fraction; }
   OutputFormat getOutputFormat() const { return outFormat; }
-
+  size_t getReadsCount() const { return readsCount; }
 
 };
 

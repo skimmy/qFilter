@@ -15,6 +15,6 @@
 /**
  * \brief sort fastq file using stxxl external sorting
  */
-void sortFastqReadStxxl(std::ifstream & input, std::ofstream& sorted, double fraction);
+void sortFastqReadStxxl(std::ifstream & input, std::ofstream& sorted, double fraction, size_t readsCount = -1);
 
 #endif

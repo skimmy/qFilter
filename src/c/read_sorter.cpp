@@ -7,6 +7,7 @@
 
 #include "read_sorter.hpp"
 #include "util/options.hpp"
+#include "util/common.hpp"
 
 
 read_record_t read_record_min; 
@@ -44,8 +45,12 @@ ReadRecordWrapper::ReadRecordWrapper(const FastqRead& read)
   strncpy(this->read->sequence, read.getBases().c_str(), this->read->actual_read_length);
   strncpy(this->read->qualities, read.getQualities().c_str(), this->read->actual_read_length);
   read_header header;
-  string_to_header_regex(read.getHeader().c_str(), &header);
+  //string_to_header_regex(read.getHeader().c_str(), &header);
+  string_to_read_header(read.getHeader().c_str(), &header);
+
+  // TODO: here 'header' is leaking memory!!!
   this->HeaderToRecord(&header, this->read);
+  header_free(&header);  
 }
 
 ReadRecordWrapper::ReadRecordWrapper(const read_record_t& record)
@@ -100,11 +105,12 @@ std::ostream& operator<< (std::ostream& os, const ReadRecordWrapper& record) {
 return os;
 }
 
-void sortFastqInternal(std::ifstream& input, std::ofstream& sorted, double fraction) {
+void sortFastqInternal(std::ifstream& input, std::ofstream& sorted, double fraction, size_t readsCount = -1) {
+  uint64_t M = (readsCount > 0) ? readsCount : MaxUint64;
   FastqRead r;  
   std::vector<read_record_t> v;
   size_t count = 0;
-  while(!input.eof()) {
+  while((!input.eof()) && (count < M)) {
     if ((count % 10000) == 0) {
       std::cout << count << std::endl;
       std::cout.flush();
@@ -135,11 +141,11 @@ void sortFastq(const std::string& inFilePath, const std::string& outFilePath) {
   std::ifstream ifs(inFilePath);
   std::ofstream ofs(outFilePath);
   double fraction = opts.getFraction();
-  std::cout <<"Fraction ---> "  << fraction << std::endl;
+  size_t readsCount = opts.getReadsCount();
   if (opts.isStxxlEnabled()) {
-    sortFastqReadStxxl(ifs, ofs, fraction);
+    sortFastqReadStxxl(ifs, ofs, fraction, readsCount);
   } else {
-    sortFastqInternal(ifs, ofs, fraction);
+    sortFastqInternal(ifs, ofs, fraction, readsCount);
   }
   ifs.close();
   ofs.close();

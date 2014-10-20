@@ -6,7 +6,7 @@ ALL_OBJS=$(BASIC_OBJS) $(UTIL_OBJS) $(LIB_BIO_OBJS)
 
 # All header files
 HDR_BASIC=fasta_read.hpp read_sorter.hpp
-HDR_UTIL=util/debug.hpp util/options.hpp util/stxxl_helper.hpp
+HDR_UTIL=util/debug.hpp util/options.hpp util/stxxl_helper.hpp util/common.hpp
 LIB_BIO_HDR=util/fast/Format.hpp util/seq.hpp util/sequence/Sequence.hpp util/sequence/Read.cpp util/sequence/Read.hpp util/sequence/FastqRead.hpp
 ALL_HDR=$(HDR_BASIC) $(HDR_UTIL) $(LIB_BIO_HDR)
 
@@ -21,7 +21,8 @@ DEPENDENCIES=$(MAIN) $(ALL_OBJS) $(ALL_HDR)
 
 # Conditional compiler options
 VERBOSE=-DVERBOSE=1
-ALL_CONDITIONALS=$(VERBOSE)
+MTRACE=#-DMTRACE
+ALL_CONDITIONALS=$(VERBOSE) $(MTRACE)
 
 # Options
 WARNINGS=-Wall

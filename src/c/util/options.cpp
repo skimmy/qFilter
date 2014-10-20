@@ -12,13 +12,14 @@ void printUsage(std::ostream& os, const char* name, int exitCode) {
   exit(exitCode);
 }
 
-const char* shortOptions = "hXf:O:";
+const char* shortOptions = "hXf:O:M:";
 const struct option longOptions[] =
   {
     {"help", 0, NULL, 'h'},
     {"use-stdxxl", 0, NULL, 'X'},
     {"fraction", 1, NULL, 'f'},
-    {"output-format", 1, NULL, 'O'}
+    {"output-format", 1, NULL, 'O'},
+    {"reads-count", 1, NULL, 'M' }
   };
 
 QFilterOptions::QFilterOptions() {
@@ -41,6 +42,7 @@ std::ostream& operator<<(std::ostream& os, QFilterOptions& otps) {
   os << "Use stxxl library " << opts.stxxl << std::endl;
   os << "Input fraction    " << opts.fraction << std::endl;
   os << "Output format     " << opts.outFormat << std::endl;
+  os << "Reads count       " << opts.readsCount << std::endl;
   return os;
 }
 
@@ -62,6 +64,9 @@ void QFilterOptions::ParseCommandLineArguments(int argn, char** argv) {
     case 'O':
       this->outFormat = (OutputFormat)atoi(optarg);
       break;
+    case 'M':
+      this->readsCount = atoi(optarg);
+      break;
     default:
       break;
     }
@@ -81,4 +86,5 @@ void QFilterOptions::SetDefaultValues() {
   this->fraction = 1.0;
   this->fastqFilePath = ""; // is this redundant?
   this->outFormat = Fasta;
+  this->readsCount = -1;
 }

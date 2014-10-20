@@ -5,6 +5,12 @@
 
 #include "util/seq.hpp"
 
+bool isBase(const char c) {
+  return (c == 'A' || c == 'a' || c == 'C' || c == 'c' ||
+	  c == 'G' || c == 'g' || c == 'T' || c == 't' ||
+	  c == 'n' || c == 'N');
+}
+
 /* 
  * This is the POSIX regex for the (custom) reads header.
  * The header is in the form:
@@ -38,36 +44,109 @@ void header_parse_error_message(int error) {
  *  str    the string containing the raw read header
  *  head   an valid pointer to a read_header structure
  */
-// int string_to_read_header(const char* str, read_header * head) {
-//   // support string and its index
-//   char* tmp = (char*) malloc(DEFAULT_STRING_SIZE);
-//   size_t j = 0;  
+int string_to_read_header(const char* str, read_header * head) {
+  if (*str != '@') {
+    return ERR_TRAILING_AT;
+  }
+  str++;
+  char tempBuffer[2048];
+  size_t i = 0;
+  //  size_t n = strlen(str);
 
-//   // first character must be '@'
-//   if (*str != '@') {
-//     return ERR_TRAILING_AT;
-//   }
-//   str++;
-//   j = 0;
-//   tmp[j] = '\0';
-//   while(*str != ':') {
-//     if (*str == '\0') {     
-//       // end of string reached before finding ':'
-//       return ERR_NO_ID_DIVIDER;
-//     }
-//     tmp[j++] = *str;
-//     str++;
-//   }
-//   str++;
-//   tmp[j] = '\0';
-//   printf("%s\n",tmp);
-  
-//   // all ok return the no error code
-//   return NO_ERR;
+  // NAME - search for the first ':' meaning the end of the name  
+  while((*str != ':') && (*str != '\0')) {
+    tempBuffer[i] = *str;
+    i++;
+    str++;
+  }
+  // end of the string without ':' char
+  if (*str == '\0') {
+    return ERR_NO_ID_DIVIDER;
+  }
+  tempBuffer[i] = '\0';
+  head->name = (char*)malloc(strlen(tempBuffer));
+  strcpy(head->name, tempBuffer);
+  str++;
 
-//   free(tmp);
-//   tmp = NULL;     
-// }
+  // ID - first blank ' ' indicates the end of id
+  i = 0;
+  while((*str != ' ') && (*str != '\0')) {
+    tempBuffer[i] = *str;
+    i++;
+    str++;
+  }
+  tempBuffer[i] = '\0';
+  head->id = (char*) malloc(strlen(tempBuffer));
+  strcpy(head->id, tempBuffer);
+  // end of the string after id (it is not custom format)
+  if (*str == '\0') {
+    return ERR_NO_CUSTOM_FORMAT;
+  }
+  str++;
+
+  // POS= - String is matched
+  char posString[] = "pos=";
+  if (strstr(str, posString) == NULL) {
+    return ERR_NO_CUSTOM_FORMAT;
+  }
+  str += 4;
+  // find the position  
+  i = 0;
+  while((isdigit(*str)) && (*str != '\0')) {
+    tempBuffer[i] = *str;
+    str++;
+    i++;
+  }
+  tempBuffer[i] = '\0';
+   head->sequencing_position = atoi(tempBuffer);
+  if (*str == '\0') {
+    return ERR_NO_CUSTOM_FORMAT;
+  }
+
+  // NOERR=
+  char noErrStr[] = "NoErr=";
+  if ((str = strstr(str, noErrStr)) == NULL) {
+    return ERR_NO_CUSTOM_FORMAT;
+  }
+  str += 6;
+  i = 0;
+  while (isBase(*str) && (*str != '\0')) {
+    tempBuffer[i] = *str;
+    str++;
+    i++;
+  }
+  tempBuffer[i] = '\0';
+  head->original = (char*) malloc(strlen(tempBuffer));
+  strcpy(head->original, tempBuffer);
+  if (*str == '\0') {
+    return ERR_NO_CUSTOM_FORMAT;
+  }
+
+
+  // PE=
+  char peStr[] = "Pe=";
+  if ((str = strstr(str, peStr)) == NULL) {
+    return ERR_NO_CUSTOM_FORMAT;
+  }
+  str +=3;
+  i = 0;
+  // first digit
+  tempBuffer[i++] = *str;
+  str++;
+  // dot
+  tempBuffer[i++] = *str;
+  str++;
+  // decimal part
+  while(isdigit(*str) && (*str != '\0')) {
+    tempBuffer[i] = *str;
+    i++;
+    str++;
+  }
+  tempBuffer[i] = '\0';
+  head->error_probability = atof(tempBuffer);
+
+  return NO_ERR;
+}
 
 int string_to_header_regex(const char* str, read_header* head) {
   int nmatches = 6;
