@@ -45,8 +45,8 @@ ReadRecordWrapper::ReadRecordWrapper(const FastqRead& read)
   strncpy(this->read->sequence, read.getBases().c_str(), this->read->actual_read_length);
   strncpy(this->read->qualities, read.getQualities().c_str(), this->read->actual_read_length);
   read_header header;
-  //string_to_header_regex(read.getHeader().c_str(), &header);
-  string_to_read_header(read.getHeader().c_str(), &header);
+  string_to_header_regex(read.getHeader().c_str(), &header);
+  //  string_to_read_header(read.getHeader().c_str(), &header);
 
   // TODO: here 'header' is leaking memory!!!
   this->HeaderToRecord(&header, this->read);

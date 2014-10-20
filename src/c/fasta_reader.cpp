@@ -234,6 +234,7 @@ int string_to_header_regex(const char* str, read_header* head) {
   }
   free(tmp);
   free(matches);
+  regfree(&head_re);
   matches = NULL;
 
   return NO_ERR;
