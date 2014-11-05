@@ -253,14 +253,21 @@ read_header* default_header_init() {
 }
 
 void header_free(read_header* head) {
+  if (head == NULL) {
+    return;
+  }
   if (head->id != NULL) {
     free(head->id);  
+    head->id = NULL;
   }
   if (head->name != NULL) {
     free(head->name);
+    head->name = NULL;
   }
   if (head->original != NULL) {
     free(head->original);
+    head->original = NULL;
 
   }
+  delete head;
 }

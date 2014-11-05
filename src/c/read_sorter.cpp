@@ -44,13 +44,13 @@ ReadRecordWrapper::ReadRecordWrapper(const FastqRead& read)
   this->read->actual_read_length = min((int) read.length(), MAX_READ_LENGTH);
   strncpy(this->read->sequence, read.getBases().c_str(), this->read->actual_read_length);
   strncpy(this->read->qualities, read.getQualities().c_str(), this->read->actual_read_length);
-  read_header header;
-  string_to_header_regex(read.getHeader().c_str(), &header);
+  read_header* header = default_header_init();
+  int matchCode = string_to_header_regex(read.getHeader().c_str(), header)             ;
   //  string_to_read_header(read.getHeader().c_str(), &header);
-
-  // TODO: here 'header' is leaking memory!!!
-  this->HeaderToRecord(&header, this->read);
-  header_free(&header);  
+  if (matchCode == NO_ERR) {
+    this->HeaderToRecord(header, this->read);
+  }
+  header_free(header);  
 }
 
 ReadRecordWrapper::ReadRecordWrapper(const read_record_t& record)
@@ -125,12 +125,14 @@ void sortFastqInternal(std::ifstream& input, std::ofstream& sorted, double fract
     rrw.cloneRecord(&rrt);
     v.push_back(rrt);
     ++count;
-  }
+  } 
+  
   std::cout << "Loaded " << count << " reads" << std::endl;
   std::cout << "Sorting (internal)..." << std::endl;
   std::cout.flush();
   std::sort(v.begin(), v.end(), ReadRecordComparator());
   size_t bar_n = fraction * v.size();
+
   for (uint64_t i = 0; i < bar_n; ++i) {
     ReadRecordWrapper rrw(v[i]);
     sorted << rrw;

@@ -19,10 +19,6 @@ string example = "@ecoli_sample:0 pos=510030 NoErr=GACAATTGCCTGCCAGCGGA Pe=0.115
 
 int main(int argc, char** argv)
 {
-  #ifdef MTRACE
-  std::cout << "[MTRACE] - Enabled" << std::endl;
-  mtrace();
-  #endif  
 // qFilter options
   opts.ParseCommandLineArguments(argc,argv);
   std::cout << "--------- OPTIONS ---------" << std::endl;
@@ -51,8 +47,5 @@ int main(int argc, char** argv)
   header_free(header);  
   delete header;*/
   
-  #ifdef MTRACE
-  muntrace();
-  #endif
   return 0;
 }
