@@ -4,14 +4,31 @@
 from Bio import SeqIO
 import sys
 import argparse
+import math
 
 def parseArguments():
     parser = argparse.ArgumentParser()
     parser.add_argument("input", help="input fastq file")
     parser.add_argument("-o", "--output", help="output file")
     parser.add_argument("-q", "--quality", help="maximum quality score considered (minimum is always 0)", type=int, default=100)
+    parser.add_argument("-H", "--entropy", help="computes and print entropy of the quality distribution", action="store_true")
     args = parser.parse_args()
     return args
+
+def frequencyToDistribution(freqs):
+    dist = []
+    N = float(sum(freqs))
+    for f in freqs:
+        dist.append(float(float(f) / N))
+    return dist
+        
+
+def computeEntropy(d):
+    H = 0.0
+    for x in d:
+        if x > 0:
+            H += (float(x) * math.log(x,2)) 
+    return -H
 
 if __name__ == "__main__":
     args = parseArguments()
@@ -24,6 +41,11 @@ if __name__ == "__main__":
         temp = record.letter_annotations["phred_quality"]
         for x in temp:
             qualsVector[int(x)] += 1
+    # entropy comutation
+    if args.entropy:
+        qualDist = frequencyToDistribution(qualsVector)
+        print "Entropy %f" %(computeEntropy(qualDist))
+
     outFileHandle = None
     if outFile != None:
         outFileHandle = open(outFile, "w")
