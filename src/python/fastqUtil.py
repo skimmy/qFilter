@@ -2,11 +2,14 @@
 
 import argparse
 import sys
+import random
 
 from Bio import SeqIO
 
 tasksDict = {
-    "truncate" : 1
+    "truncate" : 1,
+    "count" : 2,
+    "sample" : 3
 }
 
 def parseArguments():
@@ -30,6 +33,35 @@ def truncateFile(reads, M, outFile):
     ofh.close()
     return i
 
+def countReads(reads):
+    count = 0
+    for read in reads:
+        reads
+        count += 1
+    return count
+
+def sampleRead(reads, N, M, outFile):
+    # To sample the file for a given M
+    # generate M random numbers without
+    # repetition use that to sample the set
+
+    samples = sorted(random.sample(range(N), M))
+    print(samples)
+    ofh = open(outFile, "w")
+    i = 0;
+    j = 0;
+    for read in reads:
+        if (j >= M):
+            break
+        if i == samples[j]:
+            j += 1
+            ofh.write(read.format("fastq"))
+        i += 1
+
+    ofh.close()
+
+        
+
 if __name__ == "__main__":    
     args = parseArguments()
     task = args.task
@@ -44,6 +76,12 @@ if __name__ == "__main__":
         M = args.M
         print("Truncating...")
         truncateFile(SeqIO.parse(inFileHandler,"fastq"), M, outFileName)
+    if taskCode == 2:
+        print (countReads(SeqIO.parse(inFileHandler, "fastq")))
+    if taskCode == 3:
+        M = int(args.M)
+        N = countReads(SeqIO.parse(open(inFileName, "rU"), "fastq"))
+        sampleRead(SeqIO.parse(inFileHandler, "fastq"), N, M, outFileName)
     inFileHandler.close()
 
         
