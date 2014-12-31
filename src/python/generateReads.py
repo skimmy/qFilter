@@ -91,7 +91,7 @@ if __name__ == "__main__":
     outFileName = args.output
     if outFileName != None:
         outFileHandler = open(outFileName, "w")
-    if args.noerrors != None:
+    if args.noerror != None:
         generateErrors = False
     print "\nReference: %s\nDistribution: %s\n(M,m) = (%d, %d)\n" % (referenceFileName, distFileName,M,m)
     refSeq = loadReferenceSequence(referenceFileName)
