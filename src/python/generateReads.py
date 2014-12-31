@@ -52,8 +52,7 @@ def generateError(qualityValue, actualNucleotide):
         nucs.remove(actualNucleotide.upper())
         return nucs[random.randint(0,len(nucs)-1)]
     return actualNucleotide
-    print(p)
-
+    
 def generateReads(refSeq, randGenQual, m, M, name="", errDist=None):
     reads = []
     N = len(refSeq)
@@ -91,7 +90,7 @@ if __name__ == "__main__":
     outFileName = args.output
     if outFileName != None:
         outFileHandler = open(outFileName, "w")
-    if args.noerror != None:
+    if args.noerror == True:
         generateErrors = False
     print "\nReference: %s\nDistribution: %s\n(M,m) = (%d, %d)\n" % (referenceFileName, distFileName,M,m)
     refSeq = loadReferenceSequence(referenceFileName)

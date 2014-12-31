@@ -1,12 +1,26 @@
 #! /bin/bash
 
+# PART 0 - SCRIPT INITIALIZATION
+
+# Scripts and applications to run
+generatorScript=../scripts/generateCustomReads.sh
+sorterExec=../c/reader.out
+
+# I/O parameters
+workingDir=~/filtering/data/exp
+outputFastq=${workingDir}/out.fastq
+
 # Read arguments
-REFERENCE_SEQUENCE=$1
+referenceequence=$1
 M=$2
 m=$3
-QUALITY_DISTRIBUTION=$4
+qualityDistribution=$4
 
-# Generate reads using custom format
+# Sorting reads
+fraction=$4
 
+# PART 1 - GENERATE READS USING CUSTOM FORMAT
+bash ${generatorScript} -m ${m} -M ${M} -w ${workingDir} -o ${outputFastqName} ${referenceSequence} ${qaulityDistribution}
 
-# Sort them
+# PART 2 - SORT THE READS
+${sorterExec} -f ${fraction} ${outputFastq} 
