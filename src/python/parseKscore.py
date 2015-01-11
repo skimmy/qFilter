@@ -27,5 +27,10 @@ if __name__ == "__main__":
         perfectMatch.append(tmp)
         cumulative.append(sum(perfectMatch))
         percentage.append( float(sum(perfectMatch)) / float(len(perfectMatch)) )
-    for p in percentage:
-        print p
+    x = range(len(percentage))
+    x = range(len(percentage))
+    import matplotlib.pyplot as plt
+    plt.plot(x,percentage)
+    plt.show()
+
+    
