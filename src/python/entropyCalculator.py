@@ -22,11 +22,14 @@ def alpha(q):
     x = A - p * math.log(p,2) - q * math.log(q,2)
     return x
 
-def loadQualityDistribution(distFile):
+def loadQualityFreq(distFile):
     fh = open(distFile, "rU")
     Q = []
     for line in fh:
         Q.append(float(line))
+    return Q
+
+def freqToDist(Q):
     tot = sum(Q)
     F = [x / float(tot) for x in Q]         
     return F
@@ -34,16 +37,20 @@ def loadQualityDistribution(distFile):
 if __name__ == "__main__":
     args = parseArguments()
     distFile = args.distribution
-    Q = loadQualityDistribution(distFile)
-    pq = 1.0 / float(len(Q))
+    F = loadQualityFreq(distFile)
+    Q = range(len(F))
+    D = freqToDist(F)        
     H1 = 0.0
     H2 = 0.0
     tildeP = 0.0
+    # print(F)
+    # print(Q)
+    # print(D)
     for q in Q:
-        H1 = H1 + pq * alpha(q)
-        tildeP = tildeP + pq * qu.valueToProb(q)    
-        #print"%d  %f %f " % (q,qu.valueToProb(q),alpha(q))
+        H1 = H1 + D[q] * alpha(q)
+        tildeP = tildeP + D[q] * qu.valueToProb(q)
+
     tildeQ = 1.0 - tildeP
-    H2 = A - tildeP * math.log(tildeP,2) - tildeQ * math.log(tildeQ, 2)
+    H2 =  A - tildeP * math.log(tildeP,2) - tildeQ * math.log(tildeQ, 2)
     print "%f %f %f" % (H1, H2, math.fabs(H1 - H2))
 
