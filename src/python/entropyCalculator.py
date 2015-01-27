@@ -19,7 +19,7 @@ def alpha(q):
         return 0
     p = float(qu.valueToProb(q))
     q = float(1.0 - p)
-    x = A - p * math.log(p,2) - q * math.log(q,2)
+    x = p * A - p * math.log(p,2) - q * math.log(q,2)
     return x
 
 def loadQualityFreq(distFile):
@@ -51,6 +51,6 @@ if __name__ == "__main__":
         tildeP = tildeP + D[q] * qu.valueToProb(q)
 
     tildeQ = 1.0 - tildeP
-    H2 =  A - tildeP * math.log(tildeP,2) - tildeQ * math.log(tildeQ, 2)
+    H2 =  tildeP * A - tildeP * math.log(tildeP,2) - tildeQ * math.log(tildeQ, 2)
     print "%f %f %f" % (H1, H2, math.fabs(H1 - H2))
 
