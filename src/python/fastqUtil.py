@@ -6,10 +6,13 @@ import random
 
 from Bio import SeqIO
 
+checkNs = False
+
 tasksDict = {
     "truncate" : 1,
     "count" : 2,
-    "sample" : 3
+    "sample" : 3,
+    "clean" : 4,
 }
 
 def parseArguments():
@@ -18,6 +21,7 @@ def parseArguments():
     parser.add_argument("file", help="The fastq file used as input")
     parser.add_argument("-o", "--output", dest="out", help="The output fastq file", default="out.fastq")
     parser.add_argument("-M", "--reads-count", dest="M", help="Number of output reads", default=0)
+
     return parser.parse_args()    
 
 def truncateFile(reads, M, outFile):
@@ -35,8 +39,7 @@ def truncateFile(reads, M, outFile):
 
 def countReads(reads):
     count = 0
-    for read in reads:
-        reads
+    for read in reads:        
         count += 1
     return count
 
@@ -46,7 +49,6 @@ def sampleRead(reads, N, M, outFile):
     # repetition use that to sample the set
 
     samples = sorted(random.sample(range(N), M))
-    print(samples)
     ofh = open(outFile, "w")
     i = 0;
     j = 0;
@@ -60,7 +62,19 @@ def sampleRead(reads, N, M, outFile):
 
     ofh.close()
 
-        
+def cleanReads(reads, outFile):
+    print("Cleaning fastq file {0}".format(inFileName))
+    fh = open(outFile, "w")
+    total = 0
+    kept = 0
+    for r in reads:
+        total += 1
+        if (str(r.seq).find('N') != -1):
+            fh.write(r.format("fastq"))
+            kept += 1
+    fh.close()
+    return (total, kept, total - kept)
+
 
 if __name__ == "__main__":    
     args = parseArguments()
@@ -82,6 +96,9 @@ if __name__ == "__main__":
         M = int(args.M)
         N = countReads(SeqIO.parse(open(inFileName, "rU"), "fastq"))
         sampleRead(SeqIO.parse(inFileHandler, "fastq"), N, M, outFileName)
+    if taskCode == 4:
+        (t,k,d) = cleanReads(SeqIO.parse(inFileHandler, "fastq"), outFileName)
+        print("Kept {1} reads out of {0} (discaderd {2})".format(t,k,d))
     inFileHandler.close()
 
         
