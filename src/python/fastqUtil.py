@@ -13,6 +13,7 @@ tasksDict = {
     "count" : 2,
     "sample" : 3,
     "clean" : 4,
+    "filter" : 5,
 }
 
 def parseArguments():
@@ -75,6 +76,13 @@ def cleanReads(reads, outFile):
     fh.close()
     return (total, kept, total - kept)
 
+def filterReads(reads, lengths, outFile):
+    ofh = open(outFile, 'w')
+    for r in reads:
+        if (len(str(r.seq)) in lengths):
+            ofh.write(r.format("fastq"))
+    ofh.close()
+
 
 if __name__ == "__main__":    
     args = parseArguments()
@@ -99,6 +107,9 @@ if __name__ == "__main__":
     if taskCode == 4:
         (t,k,d) = cleanReads(SeqIO.parse(inFileHandler, "fastq"), outFileName)
         print("Kept {1} reads out of {0} (discaderd {2})".format(t,k,d))
+    if taskCode == 5:
+        m = int(args.m)
+        filterReads(SeqIO.parse(inFileHandler, "fastq"), [m], outFileName)
     inFileHandler.close()
 
         
