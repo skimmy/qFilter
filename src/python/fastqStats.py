@@ -4,6 +4,8 @@ import argparse
 
 from Bio import SeqIO
 
+debug=True
+
 def parseArguments():
     parser = argparse.ArgumentParser()
     parser.add_argument("fastq", help="The file for which compute statistics")
@@ -20,6 +22,8 @@ def lengthsDictToArray(lDict, maxLength):
     return lengthsList
             
 
+# NOTICE: lengths lists contains frequency for lengths 1 ... len (with index i
+#         representing frequency of reads with length (i+1)
 def processFastq(fastqFile):    
     inFile = open(fastqFile, "rU")
     reads = SeqIO.parse(inFile, "fastq")
@@ -36,6 +40,8 @@ def processFastq(fastqFile):
         avg_read_length += m 
     avg_read_length /= float(count)
     inFile.close()
+    if debug:
+        print("[DEBUG]    Max reads length: {0}".format(int(maxLength)))
     return (count, avg_read_length, lengthsDictToArray(lengthsDict, maxLength))
 
 if __name__ == "__main__":
