@@ -14,6 +14,8 @@ tasksDict = {
     "sample" : 3,
     "clean" : 4,
     "filter" : 5,
+    "trim" : 6,
+    "trimqual" : 7,
 }
 
 def parseArguments():
@@ -22,6 +24,7 @@ def parseArguments():
     parser.add_argument("file", help="The fastq file used as input")
     parser.add_argument("-o", "--output", dest="out", help="The output fastq file", default="out.fastq")
     parser.add_argument("-M", "--reads-count", dest="M", help="Number of output reads", default=0)
+    parser.add_argument("-q", "--min-quality", dest="q", help="Specifies minimum quality score acceptet", default=3)
 
     return parser.parse_args()    
 
@@ -83,6 +86,23 @@ def filterReads(reads, lengths, outFile):
             ofh.write(r.format("fastq"))
     ofh.close()
 
+# Trims at the beginning and at the end reads with quality <= qMin
+def trimQualities(reads, qMin, outFile):
+    ofh = open(outFile, "w")
+    for read in reads:
+        m = len(read)
+        low = 0
+        high = m-1
+        quals = read.letter_annotations["phred_quality"]
+        while (low < m and quals[low] <= qMin):
+            low += 1
+        while (high > 0 and quals[high] <= qMin):
+            high -= 1
+        if (low < high):
+            ofh.write((read[low:high].format("fastq")))
+    ofh.close()
+        
+
 
 if __name__ == "__main__":    
     args = parseArguments()
@@ -110,6 +130,10 @@ if __name__ == "__main__":
     if taskCode == 5:
         m = int(args.m)
         filterReads(SeqIO.parse(inFileHandler, "fastq"), [m], outFileName)
+    if taskCode == 7:
+        q = int(args.q)
+        trimQualities(SeqIO.parse(inFileHandler, "fastq"), q, outFileName)
+        
     inFileHandler.close()
 
         
