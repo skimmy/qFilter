@@ -25,6 +25,7 @@ def parseArguments():
     parser.add_argument("-o", "--output", dest="out", help="The output fastq file", default="out.fastq")
     parser.add_argument("-M", "--reads-count", dest="M", help="Number of output reads", default=0)
     parser.add_argument("-q", "--min-quality", dest="q", help="Specifies minimum quality score acceptet", default=3)
+    parser.add_argument("-m", "--read-length", dest="m", help="Length of considered read(s)", default=100)
 
     return parser.parse_args()    
 
