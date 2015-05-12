@@ -12,6 +12,7 @@ import qualityUtil as qutil
 
 outFileHandler = None
 generateErrors = True
+compactHeader = False
 
 def parseArguments():
     parser = argparse.ArgumentParser()
@@ -21,6 +22,7 @@ def parseArguments():
     parser.add_argument("-m", "--length", help="length of a single read", type=int, default=100)
     parser.add_argument("-o", "--output", help="fastq for the output")
     parser.add_argument("-E", "--noerror", help="if selected reads are generated with no error", action="store_true")
+    parser.add_argument("-c", "--compact", help="use compact header", action="store_true")
     return parser.parse_args()
 
 def getRandomGenerator(freqs):
@@ -65,16 +67,21 @@ def generateReads(refSeq, randGenQual, m, M, name="", errDist=None):
         readSeqNoErr = str(readSeq)
         temp = []
         readErrorProb = 1.0
+        readQual = 'I'  * (len(readSeq))
         if generateErrors:
+            readQual = ""
             for l in range(len(readSeq)):
                 # here quality is generated and errors are introduced
                 q = int(randGenQual.rvs())
                 readErrorProb = readErrorProb * (1.0 - qutil.valueToProb(q)) # P = P * 10^(-Q/10) 
                 readQual = readQual + SeqIO.QualityIO._phred_to_sanger_quality_str[q]
                 temp.append(generateError(q,readSeq[l]))
-        readErrorProb = 1.0 - readErrorProb
-        readSeq = "".join(temp)       
-        readHead = "@%s:%d pos=%d NoErr=%s Pe=%.15f" % (name, i, j, str(readSeqNoErr), readErrorProb)
+            readErrorProb = 1.0 - readErrorProb
+            readSeq = "".join(temp) 
+        if compactHeader:
+            readHead = "@%s:%d pos=%d" % (name, i, j)
+        else:
+            readHead = "@%s:%d pos=%d NoErr=%s Pe=%.15f" % (name, i, j, str(readSeqNoErr), readErrorProb)
         if outFileHandler != None:
             outFileHandler.write(readHead + "\n" + readSeq + "\n+\n" + readQual + "\n")
         else:
@@ -92,6 +99,8 @@ if __name__ == "__main__":
         outFileHandler = open(outFileName, "w")
     if args.noerror == True:
         generateErrors = False
+    if args.compact == True:
+        compactHeader = True;
     print "\nReference: %s\nDistribution: %s\n(M,m) = (%d, %d)\n" % (referenceFileName, distFileName,M,m)
     refSeq = loadReferenceSequence(referenceFileName)
     qDist = getRandomGenerator(loadDistribution(distFileName))
