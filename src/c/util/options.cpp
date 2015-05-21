@@ -12,14 +12,15 @@ void printUsage(std::ostream& os, const char* name, int exitCode) {
   exit(exitCode);
 }
 
-const char* shortOptions = "hXf:O:M:";
+const char* shortOptions = "hXf:O:M:c";
 const struct option longOptions[] =
   {
     {"help", 0, NULL, 'h'},
     {"use-stdxxl", 0, NULL, 'X'},
     {"fraction", 1, NULL, 'f'},
     {"output-format", 1, NULL, 'O'},
-    {"reads-count", 1, NULL, 'M' }
+    {"reads-count", 1, NULL, 'M' },
+    {"custom-header", 0, NULL, 'c' }
   };
 
 QFilterOptions::QFilterOptions() {
@@ -43,6 +44,7 @@ std::ostream& operator<<(std::ostream& os, QFilterOptions& otps) {
   os << "Input fraction    " << opts.fraction << std::endl;
   os << "Output format     " << opts.outFormat << std::endl;
   os << "Reads count       " << opts.readsCount << std::endl;
+  os << "Custom header     " << opts.useCustomHeader << std::endl;
   return os;
 }
 
@@ -67,6 +69,9 @@ void QFilterOptions::ParseCommandLineArguments(int argn, char** argv) {
     case 'M':
       this->readsCount = atoi(optarg);
       break;
+    case 'c':
+      this->useCustomHeader = true;
+      break;
     default:
       break;
     }
@@ -87,4 +92,5 @@ void QFilterOptions::SetDefaultValues() {
   this->fastqFilePath = ""; // is this redundant?
   this->outFormat = Fasta;
   this->readsCount = -1;
+  this->useCustomHeader = false;
 }
