@@ -16,6 +16,7 @@ tasksDict = {
     "filter" : 5,
     "trim" : 6,
     "trimqual" : 7,
+    "scramblequal" : 8,
 }
 
 def parseArguments():
@@ -102,8 +103,24 @@ def trimQualities(reads, qMin, outFile):
         if (low < high):
             ofh.write((read[low:high].format("fastq")))
     ofh.close()
-        
 
+# Randomly permutes the quality string (but NOT the sequence)
+def randomPermutationQualities(reads, fraction, outFile):
+    ofh = open(outFile, "w")
+    for read in reads:
+        m = len(read)
+        k = int( float(m) * float(fraction) ) # number of permutated positions
+        all_pos = range(m)
+        permuted_pos = random.sample(all_pos,k)
+        sorted_perm_pos = sorted(permuted_pos)
+        quals = read.letter_annotations["phred_quality"]
+        new_quals = list(quals)
+        for i in sorted_perm_pos:
+            new_quals[i] = quals[permuted_pos[i]]
+        read.letter_annotations["phred_quality"] = new_quals
+        ofh.write(read.format("fastq"))
+    ofh.close()
+    
 
 if __name__ == "__main__":    
     args = parseArguments()
@@ -134,6 +151,8 @@ if __name__ == "__main__":
     if taskCode == 7:
         q = int(args.q)
         trimQualities(SeqIO.parse(inFileHandler, "fastq"), q, outFileName)
+    if taskCode == 8:
+        randomPermutationQualities(SeqIO.parse(inFileHandler, "fastq"), 1, outFileName)
         
     inFileHandler.close()
 
