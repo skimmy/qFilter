@@ -2,12 +2,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include <cmath>
 #include <vector>
 #include <algorithm>
 
 #include "read_sorter.hpp"
 #include "util/options.hpp"
 #include "util/common.hpp"
+
 
 
 read_record_t read_record_min; 
@@ -38,17 +40,25 @@ ReadRecordWrapper::ReadRecordWrapper(char* read_seq, char* read_quals, read_head
   HeaderToRecord(header, this->read); 
 }
 
-ReadRecordWrapper::ReadRecordWrapper(const FastqRead& read) 
+ReadRecordWrapper::ReadRecordWrapper(const FastqRead& read, bool customHdr) 
   : ReadRecordWrapper()
 {
   this->read->actual_read_length = min((int) read.length(), MAX_READ_LENGTH);
   strncpy(this->read->sequence, read.getBases().c_str(), this->read->actual_read_length);
   strncpy(this->read->qualities, read.getQualities().c_str(), this->read->actual_read_length);
   read_header* header = default_header_init();
-  int matchCode = string_to_header_regex(read.getHeader().c_str(), header)             ;
-  //  string_to_read_header(read.getHeader().c_str(), &header);
-  if (matchCode == NO_ERR) {
-    this->HeaderToRecord(header, this->read);
+  // custom header already contains read's error probability
+  if (customHdr) {
+    int matchCode = string_to_header_regex(read.getHeader().c_str(), header)             ;    
+    if (matchCode == NO_ERR) {
+      this->HeaderToRecord(header, this->read);
+    }
+  }
+  // in this case probability must be computed from scratch
+  else {
+    const char * hdr = read.getHeader().c_str();
+    strncpy(this->read->name, hdr+1, strlen(hdr));
+    computeProbability(this->read);
   }
   header_free(header);  
 }
@@ -90,13 +100,18 @@ read_record_t* ReadRecordWrapper::cloneRecord(read_record_t* dest) {
 std::ostream& operator<< (std::ostream& os, const ReadRecordWrapper& record) { 
   
   OutputFormat outForm = opts.getOutputFormat();
+  bool useCustomHdr = opts.isCustomHeaderEnabled();
   char headChar = '>';
   if (outForm == Fastq) {
     headChar = '@';
   }
   char header[2048];
-  sprintf(header, "%c%s:%d pos=%d NoErr=%s Pe=%.15f", headChar, record.read->name, (int)record.read->id, 
-	  (int)record.read->sequencing_position, record.read->original, record.read->error_probability);
+  if (useCustomHdr) {
+    sprintf(header, "%c%s:%d pos=%d NoErr=%s Pe=%.15f", headChar, record.read->name, (int)record.read->id, 
+	    (int)record.read->sequencing_position, record.read->original, record.read->error_probability);
+  } else {
+    sprintf(header, "%c%s", headChar, record.read->name);
+  }
   os << header << std::endl;
   os << record.read->sequence << std::endl;
   if (outForm == Fastq) {
@@ -117,7 +132,6 @@ void sortFastqInternal(std::ifstream& input, std::ofstream& sorted, double fract
     }
     input >> r;
     ReadRecordWrapper rrw(r);
-    // Is it not working?!??!
     if (!(r.getSequenceLength() > 0)) {
       continue;
     }
@@ -153,3 +167,15 @@ void sortFastq(const std::string& inFilePath, const std::string& outFilePath) {
   ofs.close();
 }
 
+void computeProbability(read_record_t* r) {
+  size_t n = r->actual_read_length;
+  size_t offset = 33; // at the moment only PHRED+33 encoding is supported
+  double p = 1.0;
+  for (size_t i = 0; i < n; ++i) {
+    int q = r->qualities[i] - offset;
+    // IMPORTANT change with lookup table before release
+    double pq = pow(10, (-1.0 * q / 10.0));
+    p *= (1.0 - pq);
+  }
+  r->error_probability = p;
+}

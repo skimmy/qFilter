@@ -88,15 +88,17 @@ class ReadRecordComparator {
  */
 
 class ReadRecordWrapper {
+  
  private:
   read_record_t* read;
  public:
+  
   /**
    * \brief Default constructor
    */
   ReadRecordWrapper();
   ReadRecordWrapper(char* read_seq, char* read_quals, read_header* header);
-  ReadRecordWrapper(const FastqRead& reas);
+  ReadRecordWrapper(const FastqRead& read, bool customHdr=false);
   ReadRecordWrapper(const read_record_t& record);
   ~ReadRecordWrapper();
 
@@ -112,5 +114,7 @@ class ReadRecordWrapper {
 // -------------------- SORT FUNCTIONS --------------------
 
 void sortFastq(const std::string& inFilePath, const std::string& outFilePath);
+
+void computeProbability(read_record_t* r);
 
 #endif

@@ -10,7 +10,7 @@ def parseArguments():
     parser = argparse.ArgumentParser()
     parser.add_argument("input", help="input fastq file")
     parser.add_argument("-o", "--output", help="output file")
-    parser.add_argument("-q", "--quality", help="maximum quality score considered (minimum is always 0)", type=int, default=100)
+    parser.add_argument("-q", "--quality", help="maximum quality score considered (minimum is always 0)", type=int, default=50)
     parser.add_argument("-H", "--entropy", help="computes and print entropy of the quality distribution", action="store_true")
     args = parser.parse_args()
     return args

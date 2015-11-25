@@ -12,6 +12,7 @@ private:
   double fraction;           // -f: total reads fraction
   OutputFormat outFormat;    // -O: output format [int]
   size_t readsCount;         // -M: maximum reads output
+  bool useCustomHeader;      // -c: custom header
  
   
   void SetDefaultValues();
@@ -20,6 +21,7 @@ public:
   QFilterOptions();
   QFilterOptions(int argn, char** argv);
   ~QFilterOptions();
+
 
   void ParseCommandLineArguments(int argn, char** argv);
 
@@ -31,6 +33,7 @@ public:
   double getFraction() const { return fraction; }
   OutputFormat getOutputFormat() const { return outFormat; }
   size_t getReadsCount() const { return readsCount; }
+  bool isCustomHeaderEnabled() const { return useCustomHeader; }
 
 };
 
